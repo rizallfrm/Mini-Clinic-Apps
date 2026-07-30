@@ -1,18 +1,18 @@
 const express = require('express');
 const healthCheckRouter = require('./healthCheck');
+const authRouter = require('./auth');
 
 const router = express.Router();
 
 /**
  * Registrasi semua route API.
- * Route tambahan akan ditambahkan di sini setiap tahap.
  */
 
 // Health check
 router.use('/health', healthCheckRouter);
 
-// Auth routes (Tahap 7)
-// router.use('/auth', require('./auth'));
+// Auth routes (Tahap 7) ✅
+router.use('/auth', authRouter);
 
 // Patient routes (Tahap 8)
 // router.use('/patients', require('./patients'));
