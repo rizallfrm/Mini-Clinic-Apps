@@ -5,6 +5,7 @@ const patientRouter = require('./patients');
 const policlinicRouter = require('./policlinics');
 const doctorRouter = require('./doctors');
 const medicineRouter = require('./medicines');
+const registrationRouter = require('./registrations');
 
 const router = express.Router();
 
@@ -26,8 +27,8 @@ router.use('/policlinics', policlinicRouter);
 router.use('/doctors', doctorRouter);
 router.use('/medicines', medicineRouter);
 
-// Registration routes (Tahap 10)
-// router.use('/registrations', require('./registrations'));
+// Registration routes (Tahap 10) ✅
+router.use('/registrations', registrationRouter);
 
 // Queue routes (Tahap 11)
 // router.use('/queues', require('./queues'));
