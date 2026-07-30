@@ -1,42 +1,77 @@
 /**
- * Utility functions untuk format response API yang konsisten.
+ * Utility functions untuk format response API yang KONSISTEN di seluruh aplikasi.
+ *
+ * FORMAT BAKU:
+ *
+ * ✅ Success Response:
+ * {
+ *   "success": true,
+ *   "message": "...",
+ *   "data": {}  ← selalu ada, tidak pernah null
+ * }
+ *
+ * ✅ Paginated Success Response:
+ * {
+ *   "success": true,
+ *   "message": "...",
+ *   "data": {
+ *     "items": [],
+ *     "pagination": {
+ *       "page": 1,
+ *       "limit": 10,
+ *       "totalItems": 0,
+ *       "totalPages": 0
+ *     }
+ *   }
+ * }
+ *
+ * ❌ Error Response:
+ * {
+ *   "success": false,
+ *   "message": "...",
+ *   "errors": {}  ← selalu ada, minimal {}
+ * }
  */
+
+// =====================================================
+// SUCCESS RESPONSES
+// =====================================================
 
 /**
- * Kirim response sukses.
+ * Kirim response sukses (200).
+ * Field `data` selalu ada (default: {}).
+ *
  * @param {object} res - Express response object
  * @param {string} message - Pesan sukses
- * @param {*} data - Data yang dikirim
+ * @param {*} data - Data payload (default: {})
  * @param {number} statusCode - HTTP status code (default 200)
  */
-const sendSuccess = (res, message = 'Success', data = null, statusCode = 200) => {
-  const response = {
+const sendSuccess = (res, message = 'Success', data = {}, statusCode = 200) => {
+  return res.status(statusCode).json({
     success: true,
     message,
-  };
-
-  if (data !== null) {
-    response.data = data;
-  }
-
-  return res.status(statusCode).json(response);
+    data: data !== null && data !== undefined ? data : {},
+  });
 };
 
 /**
- * Kirim response sukses dengan data created (201).
+ * Kirim response sukses untuk data yang baru dibuat (201).
+ *
  * @param {object} res - Express response object
  * @param {string} message - Pesan sukses
- * @param {*} data - Data yang dikirim
+ * @param {*} data - Data yang baru dibuat
  */
-const sendCreated = (res, message = 'Created successfully', data = null) => {
+const sendCreated = (res, message = 'Created successfully', data = {}) => {
   return sendSuccess(res, message, data, 201);
 };
 
 /**
  * Kirim response sukses dengan pagination.
+ * Selalu mengembalikan struktur data.items dan data.pagination.
+ *
  * @param {object} res - Express response object
  * @param {string} message - Pesan sukses
- * @param {Array} items - Array data
+ * @param {Array} items - Array data items
  * @param {object} pagination - Info pagination
  */
 const sendPaginated = (res, message = 'Data retrieved successfully', items = [], pagination = {}) => {
@@ -44,7 +79,7 @@ const sendPaginated = (res, message = 'Data retrieved successfully', items = [],
     success: true,
     message,
     data: {
-      items,
+      items: Array.isArray(items) ? items : [],
       pagination: {
         page: pagination.page || 1,
         limit: pagination.limit || 10,
@@ -55,63 +90,77 @@ const sendPaginated = (res, message = 'Data retrieved successfully', items = [],
   });
 };
 
+// =====================================================
+// ERROR RESPONSES
+// =====================================================
+
 /**
  * Kirim response error.
+ * Field `errors` selalu ada (default: {}).
+ *
  * @param {object} res - Express response object
  * @param {string} message - Pesan error
  * @param {number} statusCode - HTTP status code (default 400)
- * @param {*} errors - Detail error (opsional)
+ * @param {object|null} errors - Detail error per field (default: {})
  */
 const sendError = (res, message = 'An error occurred', statusCode = 400, errors = null) => {
-  const response = {
+  return res.status(statusCode).json({
     success: false,
     message,
-  };
-
-  if (errors !== null) {
-    response.errors = errors;
-  }
-
-  return res.status(statusCode).json(response);
+    errors: errors !== null && errors !== undefined ? errors : {},
+  });
 };
 
 /**
- * Kirim response 404 Not Found.
+ * 400 Bad Request.
  */
-const sendNotFound = (res, message = 'Resource not found') => {
-  return sendError(res, message, 404);
+const sendBadRequest = (res, message = 'Bad request') => {
+  return sendError(res, message, 400);
 };
 
 /**
- * Kirim response 401 Unauthorized.
+ * 401 Unauthorized — token tidak ada atau tidak valid.
  */
-const sendUnauthorized = (res, message = 'Unauthorized') => {
+const sendUnauthorized = (res, message = 'Unauthorized. Please login first.') => {
   return sendError(res, message, 401);
 };
 
 /**
- * Kirim response 403 Forbidden.
+ * 403 Forbidden — tidak punya izin akses.
  */
 const sendForbidden = (res, message = 'Forbidden. You do not have access to this resource.') => {
   return sendError(res, message, 403);
 };
 
 /**
- * Kirim response 409 Conflict.
+ * 404 Not Found.
  */
-const sendConflict = (res, message = 'Data already exists') => {
+const sendNotFound = (res, message = 'Resource not found') => {
+  return sendError(res, message, 404);
+};
+
+/**
+ * 409 Conflict — data duplikat atau constraint violation.
+ */
+const sendConflict = (res, message = 'Data conflict') => {
   return sendError(res, message, 409);
 };
 
 /**
- * Kirim response 422 Unprocessable Entity (Validation Error).
+ * 422 Unprocessable Entity — validasi input gagal.
+ * Field `errors` berisi detail error per field:
+ * { "field_name": "error message" }
+ *
+ * @param {object} res - Express response object
+ * @param {string} message - Pesan error
+ * @param {object} errors - Detail error per field
  */
-const sendValidationError = (res, message = 'Validation Error', errors = null) => {
+const sendValidationError = (res, message = 'Validation Error', errors = {}) => {
   return sendError(res, message, 422, errors);
 };
 
 /**
- * Kirim response 500 Internal Server Error.
+ * 500 Internal Server Error.
  */
 const sendServerError = (res, message = 'Internal Server Error') => {
   return sendError(res, message, 500);
@@ -122,6 +171,7 @@ module.exports = {
   sendCreated,
   sendPaginated,
   sendError,
+  sendBadRequest,
   sendNotFound,
   sendUnauthorized,
   sendForbidden,

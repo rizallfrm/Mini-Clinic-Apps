@@ -6,6 +6,7 @@ const policlinicRouter = require('./policlinics');
 const doctorRouter = require('./doctors');
 const medicineRouter = require('./medicines');
 const registrationRouter = require('./registrations');
+const medicalRecordRouter = require('./medicalRecords');
 
 const router = express.Router();
 
@@ -33,8 +34,8 @@ router.use('/registrations', registrationRouter);
 // Queue routes (Tahap 11)
 // router.use('/queues', require('./queues'));
 
-// Medical Record routes (Tahap 12)
-// router.use('/medical-records', require('./medicalRecords'));
+// Medical Record routes (Tahap 12) ✅
+router.use('/medical-records', medicalRecordRouter);
 
 // Dashboard routes (Tahap 13)
 // router.use('/dashboard', require('./dashboard'));
