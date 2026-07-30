@@ -1,0 +1,3 @@
+// Controllers akan dibuat mulai Tahap 7
+// Setiap controller menangani HTTP request dan response
+// Business logic ada di service layer
