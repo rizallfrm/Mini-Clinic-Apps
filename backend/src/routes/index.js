@@ -7,6 +7,7 @@ const doctorRouter = require('./doctors');
 const medicineRouter = require('./medicines');
 const registrationRouter = require('./registrations');
 const medicalRecordRouter = require('./medicalRecords');
+const dashboardRouter = require('./dashboard');
 
 const router = express.Router();
 
@@ -37,7 +38,7 @@ router.use('/registrations', registrationRouter);
 // Medical Record routes (Tahap 12) ✅
 router.use('/medical-records', medicalRecordRouter);
 
-// Dashboard routes (Tahap 13)
-// router.use('/dashboard', require('./dashboard'));
+// Dashboard routes (Tahap 12) ✅
+router.use('/dashboard', dashboardRouter);
 
 module.exports = router;
