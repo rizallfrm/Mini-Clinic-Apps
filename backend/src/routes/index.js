@@ -1,6 +1,7 @@
 const express = require('express');
 const healthCheckRouter = require('./healthCheck');
 const authRouter = require('./auth');
+const patientRouter = require('./patients');
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.use('/health', healthCheckRouter);
 // Auth routes (Tahap 7) ✅
 router.use('/auth', authRouter);
 
-// Patient routes (Tahap 8)
-// router.use('/patients', require('./patients'));
+// Patient routes (Tahap 8) ✅
+router.use('/patients', patientRouter);
 
 // Master data routes (Tahap 9)
 // router.use('/doctors', require('./doctors'));
