@@ -9,6 +9,13 @@ const registrationRouter = require('./registrations');
 const medicalRecordRouter = require('./medicalRecords');
 const dashboardRouter = require('./dashboard');
 
+const prescriptionRouter = require('./prescriptions');
+
+const queueRouter = require('./queues');
+const userRouter = require('./users');
+const paymentRouter = require('./payments');
+const reportRouter = require('./reports');
+
 const router = express.Router();
 
 /**
@@ -21,6 +28,9 @@ router.use('/health', healthCheckRouter);
 // Auth routes (Tahap 7) ✅
 router.use('/auth', authRouter);
 
+// User routes (Admin CRUD) ✅
+router.use('/users', userRouter);
+
 // Patient routes (Tahap 8) ✅
 router.use('/patients', patientRouter);
 
@@ -32,11 +42,18 @@ router.use('/medicines', medicineRouter);
 // Registration routes (Tahap 10) ✅
 router.use('/registrations', registrationRouter);
 
-// Queue routes (Tahap 11)
-// router.use('/queues', require('./queues'));
+// Queue routes (Tahap 11) ✅
+router.use('/queues', queueRouter);
+
+// Payment & Billing routes ✅
+router.use('/payments', paymentRouter);
+
+// Report & Analytics routes ✅
+router.use('/reports', reportRouter);
 
 // Medical Record routes (Tahap 12) ✅
 router.use('/medical-records', medicalRecordRouter);
+router.use('/prescriptions', prescriptionRouter);
 
 // Dashboard routes (Tahap 12) ✅
 router.use('/dashboard', dashboardRouter);

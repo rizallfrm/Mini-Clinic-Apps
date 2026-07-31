@@ -17,21 +17,26 @@ const createMedicalRecordRules = [
 
   // O — Objective (vital signs, semua opsional)
   body('blood_pressure')
-    .optional()
-    .matches(/^\d{2,3}\/\d{2,3}$/).withMessage('Blood pressure must be in format "120/80"')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Blood pressure must be text')
+    .isLength({ max: 20 }).withMessage('Blood pressure cannot exceed 20 characters')
     .trim(),
 
   body('body_temperature')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 30, max: 45 }).withMessage('Body temperature must be between 30 and 45°C'),
 
   body('weight')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 1, max: 500 }).withMessage('Weight must be between 1 and 500 kg'),
 
   body('height')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 10, max: 300 }).withMessage('Height must be between 10 and 300 cm'),
+
+  body('pulse')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 30, max: 250 }).withMessage('Pulse must be between 30 and 250'),
 
   // A — Assessment
   body('assessment')
@@ -48,36 +53,41 @@ const createMedicalRecordRules = [
 
 const updateMedicalRecordRules = [
   body('subjective')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty().withMessage('Subjective cannot be empty')
     .isLength({ min: 5 }).withMessage('Subjective must be at least 5 characters')
     .trim(),
 
   body('blood_pressure')
-    .optional()
-    .matches(/^\d{2,3}\/\d{2,3}$/).withMessage('Blood pressure must be in format "120/80"')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Blood pressure must be text')
+    .isLength({ max: 20 }).withMessage('Blood pressure cannot exceed 20 characters')
     .trim(),
 
   body('body_temperature')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 30, max: 45 }).withMessage('Body temperature must be between 30 and 45°C'),
 
   body('weight')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 1, max: 500 }).withMessage('Weight must be between 1 and 500 kg'),
 
   body('height')
-    .optional()
+    .optional({ checkFalsy: true })
     .isFloat({ min: 10, max: 300 }).withMessage('Height must be between 10 and 300 cm'),
 
+  body('pulse')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 30, max: 250 }).withMessage('Pulse must be between 30 and 250'),
+
   body('assessment')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty().withMessage('Assessment cannot be empty')
     .isLength({ min: 3 }).withMessage('Assessment must be at least 3 characters')
     .trim(),
 
   body('plan')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty().withMessage('Plan cannot be empty')
     .isLength({ min: 3 }).withMessage('Plan must be at least 3 characters')
     .trim(),
@@ -94,52 +104,68 @@ const createActionRules = [
     .trim(),
 
   body('description')
-    .optional()
+    .optional({ checkFalsy: true })
     .isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
     .trim(),
 
   body('notes')
-    .optional()
+    .optional({ checkFalsy: true })
     .isLength({ max: 500 }).withMessage('Notes cannot exceed 500 characters')
     .trim(),
 ];
 
 const updateActionRules = [
   body('action_name')
-    .optional()
+    .optional({ checkFalsy: true })
     .notEmpty().withMessage('Action name cannot be empty')
     .isLength({ min: 2, max: 150 }).withMessage('Action name must be between 2 and 150 characters')
     .trim(),
 
   body('description')
-    .optional()
+    .optional({ checkFalsy: true })
     .isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
     .trim(),
 
   body('notes')
-    .optional()
+    .optional({ checkFalsy: true })
     .isLength({ max: 500 }).withMessage('Notes cannot exceed 500 characters')
     .trim(),
 ];
 
 // =====================================================
-// PRESCRIPTION (Resep)
+// PRESCRIPTIONS (Resep Obat)
 // =====================================================
 
 const createPrescriptionRules = [
-  body('notes')
-    .optional()
-    .isLength({ max: 500 }).withMessage('Notes cannot exceed 500 characters')
+  body('registration_id')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 1 }).withMessage('Registration ID must be a positive integer'),
+
+  body('details')
+    .isArray({ min: 1 }).withMessage('Prescription details must be a non-empty array'),
+
+  body('details.*.medicine_id')
+    .notEmpty().withMessage('Medicine ID is required')
+    .isInt({ min: 1 }).withMessage('Medicine ID must be a positive integer'),
+
+  body('details.*.dosage')
+    .notEmpty().withMessage('Dosage is required')
+    .isLength({ min: 1, max: 100 }).withMessage('Dosage must be between 1 and 100 characters')
+    .trim(),
+
+  body('details.*.quantity')
+    .notEmpty().withMessage('Quantity is required')
+    .isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+
+  body('details.*.notes')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 255 }).withMessage('Notes cannot exceed 255 characters')
     .trim(),
 ];
 
-// =====================================================
-// PRESCRIPTION DETAIL (Detail Obat)
-// =====================================================
-
 const createPrescriptionDetailRules = [
   body('medicine_id')
-    .notEmpty().withMessage('Medicine is required')
+    .notEmpty().withMessage('Medicine ID is required')
     .isInt({ min: 1 }).withMessage('Medicine ID must be a positive integer'),
 
   body('dosage')
@@ -147,55 +173,29 @@ const createPrescriptionDetailRules = [
     .isLength({ min: 1, max: 100 }).withMessage('Dosage must be between 1 and 100 characters')
     .trim(),
 
-  body('frequency')
-    .notEmpty().withMessage('Frequency is required')
-    .isLength({ min: 1, max: 100 }).withMessage('Frequency must be between 1 and 100 characters')
-    .trim(),
-
-  body('duration')
-    .optional()
-    .isLength({ max: 100 }).withMessage('Duration cannot exceed 100 characters')
-    .trim(),
-
   body('quantity')
     .notEmpty().withMessage('Quantity is required')
     .isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
 
-  body('instructions')
-    .optional()
-    .isLength({ max: 500 }).withMessage('Instructions cannot exceed 500 characters')
+  body('notes')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 255 }).withMessage('Notes cannot exceed 255 characters')
     .trim(),
 ];
 
 const updatePrescriptionDetailRules = [
-  body('medicine_id')
-    .optional()
-    .isInt({ min: 1 }).withMessage('Medicine ID must be a positive integer'),
-
   body('dosage')
-    .optional()
-    .notEmpty().withMessage('Dosage cannot be empty')
+    .optional({ checkFalsy: true })
     .isLength({ min: 1, max: 100 }).withMessage('Dosage must be between 1 and 100 characters')
     .trim(),
 
-  body('frequency')
-    .optional()
-    .notEmpty().withMessage('Frequency cannot be empty')
-    .isLength({ min: 1, max: 100 }).withMessage('Frequency must be between 1 and 100 characters')
-    .trim(),
-
-  body('duration')
-    .optional()
-    .isLength({ max: 100 }).withMessage('Duration cannot exceed 100 characters')
-    .trim(),
-
   body('quantity')
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
 
-  body('instructions')
-    .optional()
-    .isLength({ max: 500 }).withMessage('Instructions cannot exceed 500 characters')
+  body('notes')
+    .optional({ checkFalsy: true })
+    .isLength({ max: 255 }).withMessage('Notes cannot exceed 255 characters')
     .trim(),
 ];
 

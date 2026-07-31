@@ -23,30 +23,33 @@ router.use(authenticate);
 // GET /api/medical-records
 router.get('/', authorize('ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER'), medicalRecordController.getAllMedicalRecords);
 
+// GET /api/medical-records/by-registration/:registrationId
+router.get('/by-registration/:registrationId', authorize('ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER'), medicalRecordController.getMedicalRecordByRegistrationId);
+
 // GET /api/medical-records/:id
 router.get('/:id', authorize('ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER'), medicalRecordController.getMedicalRecordById);
 
 // POST /api/medical-records
-router.post('/', authorize('DOCTOR'), createMedicalRecordRules, validate, medicalRecordController.createMedicalRecord);
+router.post('/', authorize('ADMIN', 'DOCTOR'), createMedicalRecordRules, validate, medicalRecordController.createMedicalRecord);
 
 // PUT /api/medical-records/:id
-router.put('/:id', authorize('DOCTOR'), updateMedicalRecordRules, validate, medicalRecordController.updateMedicalRecord);
+router.put('/:id', authorize('ADMIN', 'DOCTOR'), updateMedicalRecordRules, validate, medicalRecordController.updateMedicalRecord);
 
 // PATCH /api/medical-records/:id/complete
-router.patch('/:id/complete', authorize('DOCTOR'), medicalRecordController.completeMedicalRecord);
+router.put('/:id/complete', authorize('ADMIN', 'DOCTOR'), medicalRecordController.completeMedicalRecord);
 
 // =====================================================
 // MEDICAL ACTIONS
 // =====================================================
 
 // POST /api/medical-records/:id/actions
-router.post('/:id/actions', authorize('DOCTOR'), createActionRules, validate, medicalRecordController.addMedicalAction);
+router.post('/:id/actions', authorize('ADMIN', 'DOCTOR'), createActionRules, validate, medicalRecordController.addMedicalAction);
 
 // PUT /api/medical-records/:id/actions/:actionId
-router.put('/:id/actions/:actionId', authorize('DOCTOR'), updateActionRules, validate, medicalRecordController.updateMedicalAction);
+router.put('/:id/actions/:actionId', authorize('ADMIN', 'DOCTOR'), updateActionRules, validate, medicalRecordController.updateMedicalAction);
 
 // DELETE /api/medical-records/:id/actions/:actionId
-router.delete('/:id/actions/:actionId', authorize('DOCTOR'), medicalRecordController.deleteMedicalAction);
+router.delete('/:id/actions/:actionId', authorize('ADMIN', 'DOCTOR'), medicalRecordController.deleteMedicalAction);
 
 // =====================================================
 // PRESCRIPTIONS
@@ -56,22 +59,15 @@ router.delete('/:id/actions/:actionId', authorize('DOCTOR'), medicalRecordContro
 router.get('/:id/prescription', authorize('ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER'), medicalRecordController.getPrescription);
 
 // POST /api/medical-records/:id/prescription
-router.post('/:id/prescription', authorize('DOCTOR'), createPrescriptionRules, validate, medicalRecordController.createPrescription);
-
-// PUT /api/medical-records/:id/prescription
-router.put('/:id/prescription', authorize('DOCTOR'), createPrescriptionRules, validate, medicalRecordController.updatePrescription);
-
-// =====================================================
-// PRESCRIPTION DETAILS (Obat)
-// =====================================================
+router.post('/:id/prescription', authorize('ADMIN', 'DOCTOR'), createPrescriptionRules, validate, medicalRecordController.createPrescription);
 
 // POST /api/medical-records/:id/prescription/details
-router.post('/:id/prescription/details', authorize('DOCTOR'), createPrescriptionDetailRules, validate, medicalRecordController.addPrescriptionDetail);
+router.post('/:id/prescription/details', authorize('ADMIN', 'DOCTOR'), createPrescriptionDetailRules, validate, medicalRecordController.addPrescriptionDetail);
 
 // PUT /api/medical-records/:id/prescription/details/:detailId
-router.put('/:id/prescription/details/:detailId', authorize('DOCTOR'), updatePrescriptionDetailRules, validate, medicalRecordController.updatePrescriptionDetail);
+router.put('/:id/prescription/details/:detailId', authorize('ADMIN', 'DOCTOR'), updatePrescriptionDetailRules, validate, medicalRecordController.updatePrescriptionDetail);
 
 // DELETE /api/medical-records/:id/prescription/details/:detailId
-router.delete('/:id/prescription/details/:detailId', authorize('DOCTOR'), medicalRecordController.deletePrescriptionDetail);
+router.delete('/:id/prescription/details/:detailId', authorize('ADMIN', 'DOCTOR'), medicalRecordController.deletePrescriptionDetail);
 
 module.exports = router;

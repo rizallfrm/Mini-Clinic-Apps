@@ -199,7 +199,7 @@ const updateDoctor = async (id, data) => {
   const { name, policlinic_id, specialization, phone, is_active } = data;
 
   // Validasi policlinic jika diubah
-  if (policlinic_id && policlinic_id !== doctor.policlinic_id) {
+  if (policlinic_id && String(policlinic_id) !== String(doctor.policlinic_id)) {
     const policlinic = await Policlinic.findByPk(policlinic_id);
     if (!policlinic) throw new AppError('Policlinic not found.', 404);
     if (!policlinic.is_active) throw new AppError('Selected policlinic is not active.', 400);

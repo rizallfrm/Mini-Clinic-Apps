@@ -130,6 +130,17 @@ const getMedicalRecordById = async (id) => {
 };
 
 /**
+ * Ambil rekam medis berdasarkan ID registrasi.
+ */
+const getMedicalRecordByRegistrationId = async (registrationId) => {
+  const record = await MedicalRecord.findOne({
+    where: { registration_id: registrationId },
+    include: getFullInclude(),
+  });
+  return record;
+};
+
+/**
  * Buat rekam medis baru (SOAP).
  * Otomatis update status registrasi → EXAMINATION.
  *
@@ -154,10 +165,10 @@ const createMedicalRecord = async (data, requestUser) => {
   });
   if (!registration) throw new AppError('Registration not found.', 404);
 
-  if (!['CHECKED_IN', 'EXAMINATION'].includes(registration.status)) {
+  if (!['WAITING', 'CHECKED_IN', 'EXAMINATION'].includes(registration.status)) {
     throw new AppError(
       `Cannot create medical record. Registration status is "${registration.status}". ` +
-        'Status must be CHECKED_IN or EXAMINATION.',
+        'Status must be WAITING, CHECKED_IN, or EXAMINATION.',
       400
     );
   }
@@ -165,7 +176,7 @@ const createMedicalRecord = async (data, requestUser) => {
   // Pastikan dokter yang login sesuai dengan dokter di registrasi
   if (requestUser.role === 'DOCTOR') {
     const doctorProfile = requestUser.doctorProfile;
-    if (!doctorProfile || doctorProfile.id !== registration.doctor_id) {
+    if (!doctorProfile || String(doctorProfile.id) !== String(registration.doctor_id)) {
       throw new AppError(
         'Access denied. You can only create medical records for your own patients.',
         403
@@ -203,8 +214,8 @@ const createMedicalRecord = async (data, requestUser) => {
       { transaction: t }
     );
 
-    // Update status registrasi → EXAMINATION (jika masih CHECKED_IN)
-    if (registration.status === 'CHECKED_IN') {
+    // Update status registrasi → EXAMINATION (jika masih WAITING atau CHECKED_IN)
+    if (['WAITING', 'CHECKED_IN'].includes(registration.status)) {
       await registration.update({ status: 'EXAMINATION' }, { transaction: t });
       // Update queue juga
       const queue = await Queue.findOne({ where: { registration_id }, transaction: t });
@@ -236,7 +247,7 @@ const updateMedicalRecord = async (id, data, requestUser) => {
   // Dokter hanya bisa update rekam medisnya sendiri
   if (requestUser.role === 'DOCTOR') {
     const doctorProfile = requestUser.doctorProfile;
-    if (!doctorProfile || doctorProfile.id !== record.doctor_id) {
+    if (!doctorProfile || String(doctorProfile.id) !== String(record.doctor_id)) {
       throw new AppError('Access denied. You can only edit your own medical records.', 403);
     }
   }
@@ -264,7 +275,6 @@ const completeMedicalRecord = async (id, requestUser) => {
   const record = await MedicalRecord.findByPk(id, {
     include: [
       { model: Registration, as: 'registration' },
-      { model: Queue, as: 'registration.queue', required: false },
     ],
   });
   if (!record) throw new AppError('Medical record not found.', 404);
@@ -275,7 +285,7 @@ const completeMedicalRecord = async (id, requestUser) => {
 
   if (requestUser.role === 'DOCTOR') {
     const doctorProfile = requestUser.doctorProfile;
-    if (!doctorProfile || doctorProfile.id !== record.doctor_id) {
+    if (!doctorProfile || String(doctorProfile.id) !== String(record.doctor_id)) {
       throw new AppError('Access denied. You can only complete your own medical records.', 403);
     }
   }
@@ -323,7 +333,7 @@ const addMedicalAction = async (medicalRecordId, data, requestUser) => {
     throw new AppError('Cannot add action to a completed medical record.', 400);
   }
 
-  if (requestUser.role === 'DOCTOR' && requestUser.doctorProfile?.id !== record.doctor_id) {
+  if (requestUser.role === 'DOCTOR' && String(requestUser.doctorProfile?.id) !== String(record.doctor_id)) {
     throw new AppError('Access denied. You can only add actions to your own medical records.', 403);
   }
 
@@ -412,7 +422,7 @@ const createPrescription = async (medicalRecordId, data, requestUser) => {
     throw new AppError('Cannot add prescription to a completed medical record.', 400);
   }
 
-  if (requestUser.role === 'DOCTOR' && requestUser.doctorProfile?.id !== record.doctor_id) {
+  if (requestUser.role === 'DOCTOR' && String(requestUser.doctorProfile?.id) !== String(record.doctor_id)) {
     throw new AppError('Access denied. You can only add prescriptions to your own medical records.', 403);
   }
 
@@ -443,6 +453,96 @@ const createPrescription = async (medicalRecordId, data, requestUser) => {
 
     return Prescription.findByPk(prescription.id, {
       include: [{ model: PrescriptionDetail, as: 'details', include: [{ model: Medicine, as: 'medicine' }] }],
+    });
+  } catch (error) {
+    await t.rollback();
+    throw error;
+  }
+};
+
+/**
+ * Buat resep lengkap (Prescription + Details + Potong Stok Obat)
+ */
+const createPrescriptionWithDetails = async (data, requestUser) => {
+  const { registration_id, medical_record_id, details, notes } = data;
+
+  let record = null;
+  if (medical_record_id) {
+    record = await MedicalRecord.findByPk(medical_record_id);
+  } else if (registration_id) {
+    record = await MedicalRecord.findOne({ where: { registration_id } });
+  }
+
+  if (!record) {
+    throw new AppError('Catatan rekam medis (SOAP) belum dibuat untuk pendaftaran ini.', 404);
+  }
+
+  if (record.status === 'COMPLETED') {
+    throw new AppError('Tidak dapat menambahkan resep pada rekam medis yang sudah selesai.', 400);
+  }
+
+  const existing = await Prescription.findOne({ where: { medical_record_id: record.id } });
+  if (existing) {
+    throw new AppError('Resep obat sudah ada untuk rekam medis ini.', 409);
+  }
+
+  const t = await sequelize.transaction();
+  try {
+    const prescription_number = await generatePrescriptionNumber(t);
+
+    const prescription = await Prescription.create(
+      {
+        medical_record_id: record.id,
+        patient_id: record.patient_id,
+        doctor_id: record.doctor_id,
+        prescription_number,
+        notes: notes || null,
+      },
+      { transaction: t }
+    );
+
+    if (Array.isArray(details) && details.length > 0) {
+      for (const item of details) {
+        const medicine = await Medicine.findByPk(item.medicine_id, { transaction: t });
+        if (!medicine) {
+          throw new AppError(`Obat dengan ID ${item.medicine_id} tidak ditemukan.`, 404);
+        }
+
+        const qty = parseInt(item.quantity) || 1;
+        if (medicine.stock < qty) {
+          throw new AppError(
+            `Stok obat "${medicine.name}" tidak mencukupi. Tersedia: ${medicine.stock}, dibutuhkan: ${qty}`,
+            422
+          );
+        }
+
+        await PrescriptionDetail.create(
+          {
+            prescription_id: prescription.id,
+            medicine_id: item.medicine_id,
+            dosage: item.dosage,
+            frequency: item.frequency || '',
+            quantity: qty,
+            notes: item.notes || null,
+          },
+          { transaction: t }
+        );
+
+        // Potong stok obat secara otomatis
+        await medicine.decrement('stock', { by: qty, transaction: t });
+      }
+    }
+
+    await t.commit();
+
+    return Prescription.findByPk(prescription.id, {
+      include: [
+        {
+          model: PrescriptionDetail,
+          as: 'details',
+          include: [{ model: Medicine, as: 'medicine', attributes: ['id', 'medicine_code', 'name', 'unit', 'stock'] }],
+        },
+      ],
     });
   } catch (error) {
     await t.rollback();
@@ -568,6 +668,7 @@ const deletePrescriptionDetail = async (medicalRecordId, detailId, requestUser) 
 module.exports = {
   getAllMedicalRecords,
   getMedicalRecordById,
+  getMedicalRecordByRegistrationId,
   createMedicalRecord,
   updateMedicalRecord,
   completeMedicalRecord,
@@ -576,6 +677,7 @@ module.exports = {
   deleteMedicalAction,
   getPrescription,
   createPrescription,
+  createPrescriptionWithDetails,
   updatePrescription,
   addPrescriptionDetail,
   updatePrescriptionDetail,

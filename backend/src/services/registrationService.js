@@ -54,8 +54,8 @@ const generateRegistrationNumber = async (visitDate, transaction) => {
  * @returns {Promise<{ queue_number: string, sequence_number: number }>}
  */
 const generateQueueData = async (policlinicId, queueDate, transaction) => {
-  // Hitung antrean yang sudah ada untuk poli ini di tanggal ini
-  const count = await Queue.count({
+  // Hitung antrean yang sudah ada untuk poli ini di tanggal ini (misal: A001, A002)
+  const poliCount = await Queue.count({
     where: { queue_date: queueDate },
     include: [
       {
@@ -68,12 +68,20 @@ const generateQueueData = async (policlinicId, queueDate, transaction) => {
     transaction,
   });
 
-  const sequence = count + 1;
-  // Prefix: A untuk poli ID 1, B untuk ID 2, dst. (max 26 poli)
-  const prefix = String.fromCharCode(64 + parseInt(policlinicId));
-  const queue_number = `${prefix}${String(sequence).padStart(3, '0')}`;
+  // Hitung total antrean global hari ini (misal: 1, 2, 3...)
+  const totalCount = await Queue.count({
+    where: { queue_date: queueDate },
+    transaction,
+  });
 
-  return { queue_number, sequence_number: sequence };
+  const poliSequence = poliCount + 1;
+  const globalSequence = totalCount + 1;
+
+  // Prefix: A untuk poli ID 1, B untuk ID 2, dst. (max 26 poli)
+  const prefix = String.fromCharCode(64 + (parseInt(policlinicId) || 1));
+  const queue_number = `${prefix}${String(poliSequence).padStart(3, '0')}`;
+
+  return { queue_number, sequence_number: globalSequence };
 };
 
 // =====================================================
@@ -297,9 +305,9 @@ const createRegistration = async (data, createdBy) => {
   if (!policlinic.is_active) throw new AppError('Selected policlinic is not active.', 400);
 
   // Validasi: dokter harus berada di poli yang sama
-  if (doctor.policlinic_id !== parseInt(policlinic_id)) {
+  if (String(doctor.policlinic_id) !== String(policlinic_id)) {
     throw new AppError(
-      `Doctor "${doctor.name}" is assigned to "${doctor.policlinic?.name}", not to the selected policlinic.`,
+      `Dokter "${doctor.name}" ditugaskan ke "${doctor.policlinic?.name}", bukan ke poliklinik yang dipilih.`,
       400
     );
   }
@@ -382,10 +390,10 @@ const updateRegistration = async (id, data) => {
     if (!doctor) throw new AppError('Doctor not found.', 404);
     if (!doctor.is_active) throw new AppError('Selected doctor is not active.', 400);
 
-    if (doctor.policlinic_id !== parseInt(newPoliclinicId)) {
+    if (String(doctor.policlinic_id) !== String(newPoliclinicId)) {
       const policlinic = await Policlinic.findByPk(newPoliclinicId);
       throw new AppError(
-        `Doctor "${doctor.name}" is not assigned to "${policlinic?.name}".`,
+        `Dokter "${doctor.name}" tidak ditugaskan ke "${policlinic?.name}".`,
         400
       );
     }

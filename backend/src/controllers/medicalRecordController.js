@@ -19,6 +19,13 @@ const getMedicalRecordById = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const getMedicalRecordByRegistrationId = async (req, res, next) => {
+  try {
+    const record = await medicalRecordService.getMedicalRecordByRegistrationId(req.params.registrationId);
+    return sendSuccess(res, 'Medical record retrieved successfully', record || null);
+  } catch (error) { next(error); }
+};
+
 const createMedicalRecord = async (req, res, next) => {
   try {
     const record = await medicalRecordService.createMedicalRecord(req.body, req.user);
@@ -83,6 +90,13 @@ const createPrescription = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
+const createPrescriptionWithDetails = async (req, res, next) => {
+  try {
+    const prescription = await medicalRecordService.createPrescriptionWithDetails(req.body, req.user);
+    return sendCreated(res, 'Prescription created successfully', prescription);
+  } catch (error) { next(error); }
+};
+
 const updatePrescription = async (req, res, next) => {
   try {
     const prescription = await medicalRecordService.updatePrescription(req.params.id, req.body, req.user);
@@ -118,6 +132,7 @@ const deletePrescriptionDetail = async (req, res, next) => {
 module.exports = {
   getAllMedicalRecords,
   getMedicalRecordById,
+  getMedicalRecordByRegistrationId,
   createMedicalRecord,
   updateMedicalRecord,
   completeMedicalRecord,
@@ -126,6 +141,7 @@ module.exports = {
   deleteMedicalAction,
   getPrescription,
   createPrescription,
+  createPrescriptionWithDetails,
   updatePrescription,
   addPrescriptionDetail,
   updatePrescriptionDetail,
