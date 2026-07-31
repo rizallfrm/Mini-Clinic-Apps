@@ -10,6 +10,7 @@ const {
   Policlinic,
   Medicine,
   Queue,
+  Payment,
 } = require('../models');
 const { AppError } = require('../middlewares/errorHandler');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
@@ -237,6 +238,11 @@ const getPatientHistory = async (patientId, query) => {
             model: Policlinic,
             as: 'policlinic',
             attributes: ['id', 'code', 'name'],
+          },
+          {
+            model: Payment,
+            as: 'payment',
+            attributes: ['payment_status', 'total_amount'],
           },
         ],
       },
