@@ -9,6 +9,7 @@ const {
   Registration,
   Queue,
   Policlinic,
+  Payment,
 } = require('../models');
 const { AppError } = require('../middlewares/errorHandler');
 
@@ -16,8 +17,13 @@ const { AppError } = require('../middlewares/errorHandler');
  * Mengambil ringkasan statistik (Summary Metrics).
  * Berguna untuk menampilkan widget angka di atas dashboard.
  */
-const getSummaryMetrics = async () => {
+const getSummaryMetrics = async (requestUser) => {
   const today = new Date().toISOString().split('T')[0];
+
+  let doctorFilter = {};
+  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
+    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
+  }
 
   const [
     totalPatients,
@@ -40,14 +46,15 @@ const getSummaryMetrics = async () => {
       },
     }),
 
-    // Total pendaftaran hari ini
-    Registration.count({ where: { visit_date: today } }),
+    // Total pendaftaran hari ini (filtered for doctor if applicable)
+    Registration.count({ where: { visit_date: today, ...doctorFilter } }),
 
-    // Pendaftaran selesai hari ini
+    // Pendaftaran selesai hari ini (filtered for doctor if applicable)
     Registration.count({
       where: {
         visit_date: today,
         status: 'COMPLETED',
+        ...doctorFilter,
       },
     }),
   ]);
@@ -68,13 +75,18 @@ const getSummaryMetrics = async () => {
  * Mengambil tren kunjungan pasien (7 hari terakhir).
  * Berguna untuk grafik/chart.
  */
-const getVisitTrends = async () => {
+const getVisitTrends = async (requestUser) => {
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 6); // 7 hari (hari ini + 6 hari ke belakang)
 
   const startDateStr = startDate.toISOString().split('T')[0];
   const endDateStr = endDate.toISOString().split('T')[0];
+
+  let doctorFilter = {};
+  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
+    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
+  }
 
   // Mengelompokkan pendaftaran berdasarkan visit_date
   const trends = await Registration.findAll({
@@ -89,6 +101,7 @@ const getVisitTrends = async () => {
       status: {
         [Op.ne]: 'CANCELLED', // Abaikan yang dibatalkan
       },
+      ...doctorFilter,
     },
     group: ['visit_date'],
     order: [['visit_date', 'ASC']],
@@ -117,11 +130,16 @@ const getVisitTrends = async () => {
  * Mengambil daftar pendaftaran terbaru hari ini (limit 5).
  * Berguna untuk tabel "Recent Activities" di dashboard.
  */
-const getRecentRegistrations = async () => {
+const getRecentRegistrations = async (requestUser) => {
   const today = new Date().toISOString().split('T')[0];
 
+  let doctorFilter = {};
+  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
+    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
+  }
+
   const recent = await Registration.findAll({
-    where: { visit_date: today },
+    where: { visit_date: today, ...doctorFilter },
     attributes: ['id', 'registration_number', 'status', 'created_at'],
     include: [
       {
@@ -144,6 +162,11 @@ const getRecentRegistrations = async () => {
         as: 'queue',
         attributes: ['queue_number'],
       },
+      {
+        model: Payment,
+        as: 'payment',
+        attributes: ['payment_status'],
+      }
     ],
     order: [['created_at', 'DESC']],
     limit: 5,
@@ -158,17 +181,18 @@ const getRecentRegistrations = async () => {
     policlinic_name: reg.policlinic?.name,
     queue_number: reg.queue?.queue_number,
     time: reg.created_at,
+    payment: reg.payment ? { payment_status: reg.payment.payment_status } : null,
   }));
 };
 
 /**
  * Kombinasi semua data dashboard untuk 1 request.
  */
-const getDashboardData = async () => {
+const getDashboardData = async (requestUser) => {
   const [metrics, trends, recent] = await Promise.all([
-    getSummaryMetrics(),
-    getVisitTrends(),
-    getRecentRegistrations(),
+    getSummaryMetrics(requestUser),
+    getVisitTrends(requestUser),
+    getRecentRegistrations(requestUser),
   ]);
 
   return {

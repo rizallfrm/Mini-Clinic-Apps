@@ -45,7 +45,7 @@ const getAllMedicines = async (query) => {
 const getActiveMedicines = async () => {
   return Medicine.findAll({
     where: { is_active: true },
-    attributes: ['id', 'medicine_code', 'name', 'unit', 'stock'],
+    attributes: ['id', 'medicine_code', 'name', 'unit', 'stock', 'price'],
     order: [['name', 'ASC']],
   });
 };
@@ -63,7 +63,7 @@ const getMedicineById = async (id) => {
  * Buat obat baru.
  */
 const createMedicine = async (data) => {
-  const { medicine_code, name, unit, stock, description, is_active } = data;
+  const { medicine_code, name, unit, stock, price, description, is_active } = data;
 
   const existing = await Medicine.findOne({
     where: { medicine_code: medicine_code.toUpperCase() },
@@ -75,6 +75,7 @@ const createMedicine = async (data) => {
     name,
     unit,
     stock: stock !== undefined ? stock : 0,
+    price: price !== undefined ? price : 0,
     description,
     is_active: is_active !== undefined ? is_active : true,
   });
@@ -87,12 +88,13 @@ const updateMedicine = async (id, data) => {
   const medicine = await Medicine.findByPk(id);
   if (!medicine) throw new AppError('Medicine not found.', 404);
 
-  const { name, unit, stock, description, is_active } = data;
+  const { name, unit, stock, price, description, is_active } = data;
 
   await medicine.update({
     ...(name !== undefined && { name }),
     ...(unit !== undefined && { unit }),
     ...(stock !== undefined && { stock }),
+    ...(price !== undefined && { price }),
     ...(description !== undefined && { description }),
     ...(is_active !== undefined && { is_active }),
   });

@@ -22,6 +22,10 @@ const createMedicineRules = [
     .optional()
     .isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
 
+  body('price')
+    .optional()
+    .isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
+
   body('description')
     .optional()
     .isLength({ max: 500 }).withMessage('Description cannot exceed 500 characters')
@@ -48,6 +52,10 @@ const updateMedicineRules = [
   body('stock')
     .optional()
     .isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
+
+  body('price')
+    .optional()
+    .isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
 
   body('description')
     .optional()

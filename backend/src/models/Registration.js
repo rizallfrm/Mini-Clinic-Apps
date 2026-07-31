@@ -40,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'registration_id',
         as: 'medicalRecord',
       });
+
+      // Satu pendaftaran memiliki satu pembayaran
+      Registration.hasOne(models.Payment, {
+        foreignKey: 'registration_id',
+        as: 'payment',
+      });
     }
   }
 

@@ -8,7 +8,7 @@ const { sendSuccess, sendCreated, sendPaginated } = require('../utils/response')
  */
 const getAllRegistrations = async (req, res, next) => {
   try {
-    const { items, pagination } = await registrationService.getAllRegistrations(req.query);
+    const { items, pagination } = await registrationService.getAllRegistrations(req.query, req.user);
     return sendPaginated(res, 'Registrations retrieved successfully', items, pagination);
   } catch (error) { next(error); }
 };
@@ -20,7 +20,7 @@ const getAllRegistrations = async (req, res, next) => {
  */
 const getTodayRegistrations = async (req, res, next) => {
   try {
-    const items = await registrationService.getTodayRegistrations(req.query);
+    const items = await registrationService.getTodayRegistrations(req.query, req.user);
     return sendSuccess(res, "Today's registrations retrieved successfully", items);
   } catch (error) { next(error); }
 };

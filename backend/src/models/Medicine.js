@@ -57,6 +57,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          min: { args: [0], msg: 'Price cannot be negative' },
+          isDecimal: { msg: 'Price must be a number' },
+        },
+      },
       is_active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

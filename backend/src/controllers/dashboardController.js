@@ -7,7 +7,7 @@ const { sendSuccess } = require('../utils/response');
  */
 const getDashboardData = async (req, res, next) => {
   try {
-    const data = await dashboardService.getDashboardData();
+    const data = await dashboardService.getDashboardData(req.user);
     return sendSuccess(res, 'Dashboard data retrieved successfully', data);
   } catch (error) {
     next(error);
@@ -20,7 +20,7 @@ const getDashboardData = async (req, res, next) => {
  */
 const getSummaryMetrics = async (req, res, next) => {
   try {
-    const data = await dashboardService.getSummaryMetrics();
+    const data = await dashboardService.getSummaryMetrics(req.user);
     return sendSuccess(res, 'Summary metrics retrieved successfully', data);
   } catch (error) {
     next(error);
@@ -33,7 +33,7 @@ const getSummaryMetrics = async (req, res, next) => {
  */
 const getVisitTrends = async (req, res, next) => {
   try {
-    const data = await dashboardService.getVisitTrends();
+    const data = await dashboardService.getVisitTrends(req.user);
     return sendSuccess(res, 'Visit trends retrieved successfully', data);
   } catch (error) {
     next(error);

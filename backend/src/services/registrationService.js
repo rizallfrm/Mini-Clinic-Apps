@@ -10,6 +10,7 @@ const {
   Policlinic,
   User,
   MedicalRecord,
+  Payment,
 } = require('../models');
 const { AppError } = require('../middlewares/errorHandler');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
@@ -133,6 +134,9 @@ const formatRegistration = (reg) => ({
   medical_record: reg.medicalRecord
     ? { id: reg.medicalRecord.id, status: reg.medicalRecord.status }
     : null,
+  payment: reg.payment
+    ? { id: reg.payment.id, payment_status: reg.payment.payment_status, total_amount: reg.payment.total_amount }
+    : null,
   created_at: reg.created_at,
   updated_at: reg.updated_at,
 });
@@ -174,6 +178,12 @@ const getIncludeOptions = () => [
     attributes: ['id', 'status'],
     required: false,
   },
+  {
+    model: Payment,
+    as: 'payment',
+    attributes: ['id', 'payment_status', 'total_amount'],
+    required: false,
+  },
 ];
 
 // =====================================================
@@ -213,11 +223,17 @@ const validateStatusTransition = (currentStatus, newStatus) => {
 /**
  * Ambil daftar registrasi dengan filter dan pagination.
  */
-const getAllRegistrations = async (query) => {
+const getAllRegistrations = async (query, requestUser) => {
   const { page, limit, offset } = getPagination(query);
   const { search, status, doctor_id, policlinic_id, visit_date, patient_id } = query;
 
   const whereClause = {};
+
+  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
+    whereClause.doctor_id = requestUser.doctorProfile.id;
+  } else if (doctor_id) {
+    whereClause.doctor_id = doctor_id;
+  }
 
   if (search && search.trim()) {
     whereClause[Op.or] = [
@@ -225,7 +241,6 @@ const getAllRegistrations = async (query) => {
     ];
   }
   if (status) whereClause.status = status;
-  if (doctor_id) whereClause.doctor_id = doctor_id;
   if (policlinic_id) whereClause.policlinic_id = policlinic_id;
   if (visit_date) whereClause.visit_date = visit_date;
   if (patient_id) whereClause.patient_id = patient_id;
@@ -247,14 +262,20 @@ const getAllRegistrations = async (query) => {
  * Ambil daftar pendaftaran hari ini.
  * Diurutkan berdasarkan nomor urut antrean.
  */
-const getTodayRegistrations = async (query) => {
+const getTodayRegistrations = async (query, requestUser) => {
   const today = new Date().toISOString().split('T')[0];
   const { status, policlinic_id, doctor_id } = query;
 
   const whereClause = { visit_date: today };
+
+  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
+    whereClause.doctor_id = requestUser.doctorProfile.id;
+  } else if (doctor_id) {
+    whereClause.doctor_id = doctor_id;
+  }
+
   if (status) whereClause.status = status;
   if (policlinic_id) whereClause.policlinic_id = policlinic_id;
-  if (doctor_id) whereClause.doctor_id = doctor_id;
 
   const rows = await Registration.findAll({
     where: whereClause,
