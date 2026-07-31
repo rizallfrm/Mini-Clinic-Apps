@@ -16,6 +16,7 @@ const getVisitReport = async (startDate, endDate) => {
       { model: Patient, as: 'patient', attributes: ['id', 'name', 'medical_record_number'] },
       { model: Doctor, as: 'doctor', attributes: ['id', 'name'] },
       { model: Policlinic, as: 'policlinic', attributes: ['id', 'name'] },
+      { model: Payment, as: 'payment', attributes: ['payment_status'] },
     ],
     order: [['visit_date', 'DESC']],
   });
