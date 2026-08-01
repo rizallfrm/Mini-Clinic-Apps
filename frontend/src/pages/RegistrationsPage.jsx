@@ -150,8 +150,8 @@ const RegistrationsPage = () => {
                       <th>Antrean</th>
                       <th>No. Registrasi</th>
                       <th>Pasien</th>
-                      <th className="hidden md:table-cell">Dokter / Poli</th>
-                      <th className="hidden sm:table-cell">Pembayaran</th>
+                      <th>Dokter / Poli</th>
+                      <th>Pembayaran</th>
                       <th>Status</th>
                       {canWrite && <th className="text-right">Aksi</th>}
                     </tr>
@@ -169,11 +169,11 @@ const RegistrationsPage = () => {
                           <div className="font-bold text-slate-900 text-sm mb-0.5">{reg.patient?.name}</div>
                           <div className="text-[10px] text-slate-400 font-medium">{reg.patient?.medical_record_number}</div>
                         </td>
-                        <td className="hidden md:table-cell text-slate-700">
+                        <td className="text-slate-700">
                           <div className="text-xs font-bold text-slate-800 mb-0.5">{reg.doctor?.name}</div>
                           <div className="text-[10px] font-semibold text-slate-500 uppercase">{reg.policlinic?.name}</div>
                         </td>
-                        <td className="hidden sm:table-cell">
+                        <td>
                           <span className="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md bg-slate-100 text-slate-600 border border-slate-200">
                             {reg.payment_type}
                           </span>
@@ -268,7 +268,7 @@ const RegistrationsPage = () => {
             </Select>
           </FormField>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormField label="Jenis Pembayaran" required>
               <Select
                 value={formData.payment_type}
