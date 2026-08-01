@@ -67,13 +67,11 @@ const LoginPage = () => {
 
         {/* Brand top */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-              <HeartPulse className="w-5 h-5 text-white" />
-            </div>
+          <div className="flex items-center gap-4 mb-10">
+            <img src="/logo.png" alt="Clinica Logo" className="w-20 h-20 object-contain scale-125 origin-left" />
             <div>
-              <div className="text-white font-bold text-lg leading-tight">Mini Clinic</div>
-              <div className="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase">Information System</div>
+              <div className="text-white font-bold text-xl leading-tight">Clinica</div>
+              <div className="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase">Healthcare System</div>
             </div>
           </div>
 
@@ -102,7 +100,7 @@ const LoginPage = () => {
 
         {/* Footer */}
         <p className="relative z-10 text-[11px] text-slate-600">
-          &copy; {new Date().getFullYear()} Mini Clinic Information System
+          &copy; {new Date().getFullYear()} Clinica Healthcare System
         </p>
       </div>
 
@@ -110,12 +108,10 @@ const LoginPage = () => {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-[380px]">
           {/* Mobile brand */}
-          <div className="text-center mb-8 lg:hidden">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-xl shadow-emerald-500/25 mb-3">
-              <HeartPulse className="w-7 h-7 text-white animate-pulse-gentle" />
-            </div>
-            <h1 className="text-2xl font-extrabold text-white">Mini Clinic</h1>
-            <p className="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase mt-0.5">Information System</p>
+          <div className="text-center mb-10 lg:hidden flex flex-col items-center">
+            <img src="/logo.png" alt="Clinica Logo" className="w-28 h-28 object-contain mb-2 scale-110" />
+            <h1 className="text-3xl font-extrabold text-white">Clinica</h1>
+            <p className="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase mt-0.5">Healthcare System</p>
           </div>
 
           {/* Session expired */}
@@ -163,7 +159,7 @@ const LoginPage = () => {
                       required
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      placeholder="nama@klinik.com"
+                      placeholder="nama@clinica.com"
                       autoComplete="email"
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none transition"
                       style={{
@@ -242,7 +238,7 @@ const LoginPage = () => {
                 <p className="text-center text-[11px] text-slate-500 mb-3 font-medium uppercase tracking-wider">
                   Login Demo Cepat
                 </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {DEMO_ACCOUNTS.map(acc => {
                     const Icon = acc.icon;
                     return (
