@@ -78,7 +78,11 @@ const UsersPage = () => {
       setShowModal(false);
       fetchUsers();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menyimpan user.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal menyimpan data akun.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -231,6 +235,8 @@ const UsersPage = () => {
               value={formData.password}
               onChange={(e) => setFormData((p) => ({ ...p, password: e.target.value }))}
               placeholder="••••••••"
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              title="Minimal 8 karakter, wajib mengandung huruf besar, huruf kecil, dan angka."
             />
           </FormField>
           <FormField label="Role / Hak Akses" required>
