@@ -31,31 +31,37 @@ function App() {
           {/* Protected Routes (App Layout) */}
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
+              {/* General Protected Routes */}
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/patients" element={<PatientsPage />} />
-              <Route path="/registrations" element={<RegistrationsPage />} />
-              <Route path="/queues" element={<QueuesPage />} />
-              <Route path="/payments" element={<PaymentsPage />} />
-              <Route path="/reports" element={<ReportsPage />} />
-
+              
               {/* Role Restricted Routes */}
-              <Route
-                path="/medical-records"
-                element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR']} />}
-              >
-                <Route index element={<MedicalRecordsPage />} />
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER']} />}>
+                <Route path="/patients" element={<PatientsPage />} />
+                <Route path="/registrations" element={<RegistrationsPage />} />
+              </Route>
+              
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR', 'REGISTRATION_OFFICER']} />}>
+                <Route path="/queues" element={<QueuesPage />} />
               </Route>
 
-              <Route
-                path="/users"
-                element={<ProtectedRoute allowedRoles={['ADMIN']} />}
-              >
-                <Route index element={<UsersPage />} />
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'REGISTRATION_OFFICER', 'CASHIER']} />}>
+                <Route path="/payments" element={<PaymentsPage />} />
               </Route>
 
-              <Route path="/policlinics" element={<PoliclinicsPage />} />
-              <Route path="/doctors" element={<DoctorsPage />} />
-              <Route path="/medicines" element={<MedicinesPage />} />
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR']} />}>
+                <Route path="/medical-records" element={<MedicalRecordsPage />} />
+              </Route>
+
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN', 'DOCTOR', 'PHARMACIST']} />}>
+                <Route path="/medicines" element={<MedicinesPage />} />
+              </Route>
+
+              <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+                <Route path="/reports" element={<ReportsPage />} />
+                <Route path="/policlinics" element={<PoliclinicsPage />} />
+                <Route path="/doctors" element={<DoctorsPage />} />
+                <Route path="/users" element={<UsersPage />} />
+              </Route>
             </Route>
           </Route>
 
