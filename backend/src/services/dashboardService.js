@@ -14,16 +14,37 @@ const {
 const { AppError } = require('../middlewares/errorHandler');
 
 /**
+ * Helper: Ambil Doctor ID milik user (jika role DOCTOR).
+ */
+const getDoctorId = async (requestUser) => {
+  if (!requestUser || requestUser.role !== 'DOCTOR') return null;
+  if (requestUser.doctorProfile && requestUser.doctorProfile.id) {
+    return requestUser.doctorProfile.id;
+  }
+  const doc = await Doctor.findOne({ where: { user_id: requestUser.id } });
+  return doc ? doc.id : null;
+};
+
+/**
  * Mengambil ringkasan statistik (Summary Metrics).
  * Berguna untuk menampilkan widget angka di atas dashboard.
  */
 const getSummaryMetrics = async (requestUser) => {
   const today = new Date().toISOString().split('T')[0];
+  const doctorId = await getDoctorId(requestUser);
+  const isDoctor = requestUser && requestUser.role === 'DOCTOR';
+  const doctorFilter = doctorId ? { doctor_id: doctorId } : {};
 
-  let doctorFilter = {};
-  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
-    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
-  }
+  // Jika dokter, hitung jumlah pasien unik yang terdaftar pada dokter tersebut
+  const totalPatientsPromise = isDoctor
+    ? (doctorId
+        ? Registration.count({
+            where: doctorFilter,
+            distinct: true,
+            col: 'patient_id',
+          })
+        : Promise.resolve(0))
+    : Patient.count();
 
   const [
     totalPatients,
@@ -32,8 +53,7 @@ const getSummaryMetrics = async (requestUser) => {
     todayRegistrations,
     todayCompletedRegistrations,
   ] = await Promise.all([
-    // Total Pasien
-    Patient.count(),
+    totalPatientsPromise,
 
     // Total Dokter Aktif
     Doctor.count({ where: { is_active: true } }),
@@ -47,10 +67,10 @@ const getSummaryMetrics = async (requestUser) => {
     }),
 
     // Total pendaftaran hari ini (filtered for doctor if applicable)
-    Registration.count({ where: { visit_date: today, ...doctorFilter } }),
+    isDoctor && !doctorId ? Promise.resolve(0) : Registration.count({ where: { visit_date: today, ...doctorFilter } }),
 
     // Pendaftaran selesai hari ini (filtered for doctor if applicable)
-    Registration.count({
+    isDoctor && !doctorId ? Promise.resolve(0) : Registration.count({
       where: {
         visit_date: today,
         status: 'COMPLETED',
@@ -83,10 +103,11 @@ const getVisitTrends = async (requestUser) => {
   const startDateStr = startDate.toISOString().split('T')[0];
   const endDateStr = endDate.toISOString().split('T')[0];
 
-  let doctorFilter = {};
-  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
-    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
-  }
+  const doctorId = await getDoctorId(requestUser);
+  const isDoctor = requestUser && requestUser.role === 'DOCTOR';
+  if (isDoctor && !doctorId) return [];
+
+  const doctorFilter = doctorId ? { doctor_id: doctorId } : {};
 
   // Mengelompokkan pendaftaran berdasarkan visit_date
   const trends = await Registration.findAll({
@@ -133,10 +154,11 @@ const getVisitTrends = async (requestUser) => {
 const getRecentRegistrations = async (requestUser) => {
   const today = new Date().toISOString().split('T')[0];
 
-  let doctorFilter = {};
-  if (requestUser && requestUser.role === 'DOCTOR' && requestUser.doctorProfile) {
-    doctorFilter = { doctor_id: requestUser.doctorProfile.id };
-  }
+  const doctorId = await getDoctorId(requestUser);
+  const isDoctor = requestUser && requestUser.role === 'DOCTOR';
+  if (isDoctor && !doctorId) return [];
+
+  const doctorFilter = doctorId ? { doctor_id: doctorId } : {};
 
   const recent = await Registration.findAll({
     where: { visit_date: today, ...doctorFilter },
