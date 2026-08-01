@@ -16,6 +16,16 @@ const createMedicalRecordRules = [
     .trim(),
 
   // O — Objective (vital signs, semua opsional)
+  body('objective')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Objective must be text')
+    .trim(),
+
+  body('notes')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Notes must be text')
+    .trim(),
+
   body('blood_pressure')
     .optional({ checkFalsy: true })
     .isString().withMessage('Blood pressure must be text')
@@ -58,6 +68,11 @@ const updateMedicalRecordRules = [
     .isLength({ min: 5 }).withMessage('Subjective must be at least 5 characters')
     .trim(),
 
+  body('objective')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Objective must be text')
+    .trim(),
+
   body('blood_pressure')
     .optional({ checkFalsy: true })
     .isString().withMessage('Blood pressure must be text')
@@ -79,6 +94,11 @@ const updateMedicalRecordRules = [
   body('pulse')
     .optional({ checkFalsy: true })
     .isInt({ min: 30, max: 250 }).withMessage('Pulse must be between 30 and 250'),
+
+  body('notes')
+    .optional({ checkFalsy: true })
+    .isString().withMessage('Notes must be text')
+    .trim(),
 
   body('assessment')
     .optional({ checkFalsy: true })
