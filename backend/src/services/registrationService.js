@@ -109,6 +109,7 @@ const formatRegistration = (reg) => ({
   doctor: reg.doctor
     ? {
         id: reg.doctor.id,
+        user_id: reg.doctor.user_id,
         doctor_code: reg.doctor.doctor_code,
         name: reg.doctor.name,
         specialization: reg.doctor.specialization,
@@ -154,7 +155,7 @@ const getIncludeOptions = () => [
   {
     model: Doctor,
     as: 'doctor',
-    attributes: ['id', 'doctor_code', 'name', 'specialization'],
+    attributes: ['id', 'user_id', 'doctor_code', 'name', 'specialization'],
   },
   {
     model: Policlinic,
