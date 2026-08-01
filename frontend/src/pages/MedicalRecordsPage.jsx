@@ -199,7 +199,7 @@ const MedicalRecordsPage = () => {
         </head>
         <body>
           <div class="header">
-            <div class="clinic-title">KLINIK MINI INFORMATION SYSTEM</div>
+            <div class="clinic-title">CLINICA HEALTHCARE SYSTEM</div>
             <div class="clinic-sub">Jl. Kesehatan No. 123, Jakarta · Telp: (021) 555-0199</div>
           </div>
           <div class="rx-title">RESEP OBAT (R/) — ${rx.prescription_number}</div>
@@ -380,7 +380,7 @@ const MedicalRecordsPage = () => {
                         {/* Vital Signs */}
                         <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3">
                           <div className="text-[10px] font-bold text-indigo-600 uppercase mb-2">Tanda Vital</div>
-                          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                             {[
                               ['TD', existingRecord.blood_pressure],
                               ['Suhu', existingRecord.body_temperature ? `${existingRecord.body_temperature}°C` : null],
@@ -503,7 +503,7 @@ const MedicalRecordsPage = () => {
 
           <div className="divider" />
           <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">Tanda Vital (Opsional)</div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <FormField label="Tekanan Darah">
               <Input type="text" value={soapData.blood_pressure}
                 onChange={e => setSoapData(p => ({ ...p, blood_pressure: e.target.value }))}
@@ -576,7 +576,7 @@ const MedicalRecordsPage = () => {
                   ))}
                 </Select>
               </FormField>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <FormField label="Dosis" required>
                   <Input required value={line.dosage}
                     onChange={e => setRxField(i, 'dosage', e.target.value)}
