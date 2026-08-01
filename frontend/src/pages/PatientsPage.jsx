@@ -35,7 +35,7 @@ const PatientForm = ({ formData, setFormData, error, lockNik = false }) => (
       />
     </FormField>
 
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <FormField label="Jenis Kelamin" required>
         <Select
           value={formData.gender}
@@ -205,8 +205,8 @@ const PatientsPage = () => {
                     <tr>
                       <th>No. RM</th>
                       <th>Nama & NIK</th>
-                      <th className="hidden md:table-cell">Kelamin / Lahir</th>
-                      <th className="hidden sm:table-cell">Kontak</th>
+                      <th>Kelamin / Lahir</th>
+                      <th>Kontak</th>
                       <th className="text-right">Aksi</th>
                     </tr>
                   </thead>
@@ -222,11 +222,11 @@ const PatientsPage = () => {
                           <div className="font-semibold text-slate-900 text-sm">{p.name}</div>
                           <div className="text-xs text-slate-400 font-mono">{p.nik}</div>
                         </td>
-                        <td className="hidden md:table-cell text-slate-600">
+                        <td className="text-slate-600">
                           <div className="text-xs">{p.gender === 'MALE' ? 'Laki-laki' : 'Perempuan'}</div>
                           <div className="text-xs text-slate-400">{p.birth_date}</div>
                         </td>
-                        <td className="hidden sm:table-cell">
+                        <td>
                           <div className="flex items-center gap-1.5 text-xs text-slate-700">
                             <Phone className="w-3 h-3 text-slate-400" />
                             {p.phone}
@@ -345,7 +345,7 @@ const PatientsPage = () => {
                         </div>
                         <div className="bg-slate-50 rounded-lg p-3">
                           <div className="text-[10px] font-bold text-slate-500 uppercase mb-1.5">Tanda Vital</div>
-                          <div className="grid grid-cols-2 gap-1 text-xs text-slate-700">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs text-slate-700">
                             {[
                               ['TD', rec.blood_pressure],
                               ['Suhu', rec.body_temperature ? `${rec.body_temperature}°C` : null],
