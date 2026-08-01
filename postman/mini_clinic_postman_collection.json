@@ -1,0 +1,2411 @@
+{
+  "info": {
+    "_postman_id": "mini-clinic-complete-collection-v3",
+    "name": "Mini Clinic Information System - Complete API Collection",
+    "description": "Koleksi Postman LENGKAP (1.1 s/d 6.3) untuk Mini Clinic Information System dengan Saved Responses di setiap request.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "patientId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "doctorId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "policlinicId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "registrationId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "medicineId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "medicalRecordId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "1.1 Login Admin (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"Admin123!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "1.1 Login Admin (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"Admin123!\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzIyMzAwMDAwfQ.abc123\",\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Administrator\",\n      \"email\": \"admin@clinic.com\",\n      \"role\": \"ADMIN\"\n    }\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.success && res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.2 Login Doctor (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "1.2 Login Doctor (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IERPQ1RPUiIsImlhdCI6MTcyMjMwMDAwMH0.xyz789\",\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@clinic.com\",\n      \"role\": \"DOCTOR\"\n    }\n  }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.success && res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.3 Login Wrong Password (ERROR 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "1.3 Login Wrong Password (ERROR 401)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email atau password salah\",\n  \"errors\": {}\n}"
+            }
+          ]
+        },
+        {
+          "name": "1.4 Login Validation Error (ERROR 422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "1.4 Login Validation Error (ERROR 422)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation Error\",\n  \"errors\": {\n    \"email\": \"Email wajib diisi\",\n    \"password\": \"Password wajib diisi\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "1.5 Get Current User Profile (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "1.5 Get Current User Profile (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Administrator\",\n    \"email\": \"admin@clinic.com\",\n    \"role\": \"ADMIN\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "1.6 Get Profile Without Token (ERROR 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": [
+            {
+              "name": "1.6 Get Profile Without Token (ERROR 401)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Akses ditolak. Token tidak ditemukan\",\n  \"errors\": {}\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Patients",
+      "item": [
+        {
+          "name": "2.1 Get All Patients (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "2.1 Get All Patients (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/patients?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"medical_record_number\": \"RM-20240001\",\n        \"nik\": \"3273012506980001\",\n        \"name\": \"Budi Santoso\",\n        \"gender\": \"MALE\",\n        \"phone\": \"08123456001\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"totalItems\": 1,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.2 Search Patient by Name/NIK/RM (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients?search=Budi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Budi"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "2.2 Search Patient by Name/NIK/RM (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/patients?search=Budi",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "Budi"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"medical_record_number\": \"RM-20240001\",\n        \"nik\": \"3273012506980001\",\n        \"name\": \"Budi Santoso\",\n        \"gender\": \"MALE\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"totalItems\": 1,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.3 Get Patient Detail by ID (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients/{{patientId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients",
+                "{{patientId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "2.3 Get Patient Detail by ID (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/patients/{{patientId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients",
+                    "{{patientId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"id\": 1,\n    \"medical_record_number\": \"RM-20240001\",\n    \"nik\": \"3273012506980001\",\n    \"name\": \"Budi Santoso\",\n    \"gender\": \"MALE\",\n    \"birth_date\": \"1985-06-25\",\n    \"phone\": \"08123456001\",\n    \"address\": \"Jl. Merdeka No. 1\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.4 Create Patient (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nik\": \"3273012506980099\",\n  \"name\": \"Dewi Kusuma\",\n  \"gender\": \"FEMALE\",\n  \"birth_date\": \"1992-03-15\",\n  \"phone\": \"08198765099\",\n  \"address\": \"Jl. Sudirman No. 99\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "2.4 Create Patient (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/patients",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nik\": \"3273012506980099\",\n  \"name\": \"Dewi Kusuma\",\n  \"gender\": \"FEMALE\",\n  \"birth_date\": \"1992-03-15\",\n  \"phone\": \"08198765099\",\n  \"address\": \"Jl. Sudirman No. 99\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Pasien berhasil didaftarkan\",\n  \"data\": {\n    \"id\": 10,\n    \"medical_record_number\": \"RM-20240010\",\n    \"nik\": \"3273012506980099\",\n    \"name\": \"Dewi Kusuma\",\n    \"gender\": \"FEMALE\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.5 Create Patient Duplicate NIK (ERROR 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nik\": \"3273012506980001\",\n  \"name\": \"Budi Dup\",\n  \"gender\": \"MALE\",\n  \"birth_date\": \"1985-06-25\",\n  \"phone\": \"08123456001\",\n  \"address\": \"Jl. Merdeka\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "2.5 Create Patient Duplicate NIK (ERROR 409)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/patients",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nik\": \"3273012506980001\",\n  \"name\": \"Budi Dup\",\n  \"gender\": \"MALE\",\n  \"birth_date\": \"1985-06-25\",\n  \"phone\": \"08123456001\",\n  \"address\": \"Jl. Merdeka\"\n}"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"NIK sudah terdaftar dalam sistem\",\n  \"errors\": {}\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.6 Create Patient Invalid NIK Format (ERROR 422)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/patients",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nik\": \"12345\",\n  \"name\": \"Salah NIK\",\n  \"gender\": \"MALE\",\n  \"birth_date\": \"1990-01-01\",\n  \"phone\": \"0812345\",\n  \"address\": \"Alamat\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "2.6 Create Patient Invalid NIK Format (ERROR 422)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/patients",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nik\": \"12345\",\n  \"name\": \"Salah NIK\",\n  \"gender\": \"MALE\",\n  \"birth_date\": \"1990-01-01\",\n  \"phone\": \"0812345\",\n  \"address\": \"Alamat\"\n}"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation Error\",\n  \"errors\": {\n    \"nik\": \"NIK harus terdiri dari 16 digit angka\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.7 Get Patient Medical History (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients/{{patientId}}/history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients",
+                "{{patientId}}",
+                "history"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "2.7 Get Patient Medical History (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/patients/{{patientId}}/history",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients",
+                    "{{patientId}}",
+                    "history"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"examination_date\": \"2024-07-31T08:30:00.000Z\",\n        \"status\": \"COMPLETED\",\n        \"subjective\": \"Demam dan batuk\",\n        \"assessment\": \"ISPA\",\n        \"plan\": \"Istirahat & obat\",\n        \"doctor\": {\n          \"name\": \"dr. Ahmad Fauzi, Sp.U\"\n        }\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2.8 Delete Patient with Registration History (ERROR 400)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/patients/{{patientId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "patients",
+                "{{patientId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "2.8 Delete Patient with Registration History (ERROR 400)",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/patients/{{patientId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "patients",
+                    "{{patientId}}"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Tidak dapat menghapus pasien yang memiliki riwayat pendaftaran atau rekam medis\",\n  \"errors\": {}\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Master Data",
+      "item": [
+        {
+          "name": "Policlinics",
+          "item": [
+            {
+              "name": "3.1 Get All Policlinics (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/policlinics",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "policlinics"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.1 Get All Policlinics (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/policlinics",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "policlinics"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"code\": \"UMUM\",\n      \"name\": \"Poli Umum\",\n      \"description\": \"Pelayanan umum\",\n      \"is_active\": true\n    }\n  ]\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.2 Get Active Policlinics Dropdown (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/policlinics/active",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "policlinics",
+                    "active"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.2 Get Active Policlinics Dropdown (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/policlinics/active",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "policlinics",
+                        "active"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"code\": \"UMUM\",\n      \"name\": \"Poli Umum\",\n      \"is_active\": true\n    }\n  ]\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.3 Create Policlinic (SUCCESS)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/policlinics",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "policlinics"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"ANAK\",\n  \"name\": \"Poli Anak\",\n  \"description\": \"Layanan anak\",\n  \"is_active\": true\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.3 Create Policlinic (SUCCESS)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/policlinics",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "policlinics"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"code\": \"ANAK\",\n  \"name\": \"Poli Anak\",\n  \"description\": \"Layanan anak\",\n  \"is_active\": true\n}"
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Poliklinik berhasil dibuat\",\n  \"data\": {\n    \"id\": 3,\n    \"code\": \"ANAK\",\n    \"name\": \"Poli Anak\",\n    \"is_active\": true\n  }\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.4 Create Policlinic Duplicate Code (ERROR 409)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/policlinics",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "policlinics"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"UMUM\",\n  \"name\": \"Poli Umum Dua\",\n  \"description\": \"Dup\",\n  \"is_active\": true\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.4 Create Policlinic Duplicate Code (ERROR 409)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/policlinics",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "policlinics"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"code\": \"UMUM\",\n  \"name\": \"Poli Umum Dua\",\n  \"description\": \"Dup\",\n  \"is_active\": true\n}"
+                    }
+                  },
+                  "status": "Conflict",
+                  "code": 409,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Kode poliklinik sudah digunakan\",\n  \"errors\": {}\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Doctors",
+          "item": [
+            {
+              "name": "3.5 Get All Doctors (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/doctors",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "doctors"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.5 Get All Doctors (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/doctors",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "doctors"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@clinic.com\",\n      \"specialization\": \"Dokter Umum\",\n      \"is_active\": true,\n      \"policlinic_id\": 1\n    }\n  ]\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.6 Get Active Doctors by Policlinic (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/doctors/active?policlinic_id=1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "doctors",
+                    "active"
+                  ],
+                  "query": [
+                    {
+                      "key": "policlinic_id",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.6 Get Active Doctors by Policlinic (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/doctors/active?policlinic_id=1",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "doctors",
+                        "active"
+                      ],
+                      "query": [
+                        {
+                          "key": "policlinic_id",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"specialization\": \"Dokter Umum\",\n      \"policlinic_id\": 1\n    }\n  ]\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.7 Create Doctor User (SUCCESS)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/doctors",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "doctors"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"dr. Siti Rahayu\",\n  \"email\": \"siti@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Anak\",\n  \"phone\": \"0812345\",\n  \"policlinic_id\": 1,\n  \"is_active\": true\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.7 Create Doctor User (SUCCESS)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/doctors",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "doctors"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"dr. Siti Rahayu\",\n  \"email\": \"siti@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Anak\",\n  \"phone\": \"0812345\",\n  \"policlinic_id\": 1,\n  \"is_active\": true\n}"
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Dokter berhasil ditambahkan\",\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"dr. Siti Rahayu\",\n    \"email\": \"siti@clinic.com\",\n    \"specialization\": \"Dokter Anak\"\n  }\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.8 Create Doctor Duplicate Email (ERROR 409)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/doctors",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "doctors"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.8 Create Doctor Duplicate Email (ERROR 409)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/doctors",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "doctors"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
+                    }
+                  },
+                  "status": "Conflict",
+                  "code": 409,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Email sudah terdaftar\",\n  \"errors\": {}\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Medicines",
+          "item": [
+            {
+              "name": "3.9 Get All Medicines (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/medicines?page=1&limit=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicines"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.9 Get All Medicines (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/medicines?page=1&limit=10",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "medicines"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "limit",
+                          "value": "10"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 1,\n        \"name\": \"Paracetamol 500mg\",\n        \"category\": \"Analgesik\",\n        \"unit\": \"Tablet\",\n        \"price\": 5000,\n        \"stock\": 500,\n        \"min_stock\": 20\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"totalItems\": 1,\n      \"totalPages\": 1\n    }\n  }\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.10 Get Low Stock Medicines (SUCCESS)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/medicines?low_stock=true",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicines"
+                  ],
+                  "query": [
+                    {
+                      "key": "low_stock",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "3.10 Get Low Stock Medicines (SUCCESS)",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/medicines?low_stock=true",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "medicines"
+                      ],
+                      "query": [
+                        {
+                          "key": "low_stock",
+                          "value": "true"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"items\": [\n      {\n        \"id\": 2,\n        \"name\": \"Amoxicillin 500mg\",\n        \"stock\": 15,\n        \"min_stock\": 20\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"totalItems\": 1,\n      \"totalPages\": 1\n    }\n  }\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.11 Adjust Stock ADD (SUCCESS)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/medicines/{{medicineId}}/stock",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicines",
+                    "{{medicineId}}",
+                    "stock"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"IN\",\n  \"quantity\": 100,\n  \"notes\": \"Restok Kimia Farma\"\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.11 Adjust Stock ADD (SUCCESS)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/medicines/{{medicineId}}/stock",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "medicines",
+                        "{{medicineId}}",
+                        "stock"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"type\": \"IN\",\n  \"quantity\": 100,\n  \"notes\": \"Restok Kimia Farma\"\n}"
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Penyesuaian stok berhasil\",\n  \"data\": {\n    \"medicine_id\": 1,\n    \"type\": \"IN\",\n    \"quantity\": 100,\n    \"stock_before\": 500,\n    \"stock_after\": 600\n  }\n}"
+                }
+              ]
+            },
+            {
+              "name": "3.12 Adjust Stock Insufficient SUBTRACT (ERROR 400)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/medicines/{{medicineId}}/stock",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medicines",
+                    "{{medicineId}}",
+                    "stock"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"OUT\",\n  \"quantity\": 9999,\n  \"notes\": \"Pengeluaran besar\"\n}"
+                }
+              },
+              "response": [
+                {
+                  "name": "3.12 Adjust Stock Insufficient SUBTRACT (ERROR 400)",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/medicines/{{medicineId}}/stock",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "medicines",
+                        "{{medicineId}}",
+                        "stock"
+                      ]
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"type\": \"OUT\",\n  \"quantity\": 9999,\n  \"notes\": \"Pengeluaran besar\"\n}"
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Stok tidak mencukupi. Stok tersedia: 500, diminta: 9999\",\n  \"errors\": {}\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Registrations",
+      "item": [
+        {
+          "name": "4.1 Get Today Registrations (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/registrations/today",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registrations",
+                "today"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "4.1 Get Today Registrations (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations/today",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "registrations",
+                    "today"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"registration_number\": \"REG-20240731-001\",\n      \"payment_type\": \"BPJS\",\n      \"status\": \"WAITING\",\n      \"patient\": {\n        \"name\": \"Budi Santoso\",\n        \"medical_record_number\": \"RM-20240001\"\n      },\n      \"doctor\": {\n        \"name\": \"dr. Ahmad Fauzi, Sp.U\"\n      },\n      \"policlinic\": {\n        \"name\": \"Poli Umum\"\n      },\n      \"queue\": {\n        \"queue_number\": \"A001\",\n        \"status\": \"WAITING\"\n      }\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "4.2 Create Registration & Queue (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registrations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": 1,\n  \"policlinic_id\": 1,\n  \"doctor_id\": 2,\n  \"visit_date\": \"2024-07-31\",\n  \"payment_type\": \"BPJS\",\n  \"initial_complaint\": \"Demam dan batuk\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "4.2 Create Registration & Queue (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "registrations"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patient_id\": 1,\n  \"policlinic_id\": 1,\n  \"doctor_id\": 2,\n  \"visit_date\": \"2024-07-31\",\n  \"payment_type\": \"BPJS\",\n  \"initial_complaint\": \"Demam dan batuk\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Pendaftaran berhasil dibuat\",\n  \"data\": {\n    \"registration\": {\n      \"id\": 5,\n      \"registration_number\": \"REG-20240731-005\",\n      \"status\": \"WAITING\"\n    },\n    \"queue\": {\n      \"id\": 5,\n      \"queue_number\": \"A005\",\n      \"status\": \"WAITING\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "4.3 Create Registration Doctor Not In Policlinic (ERROR 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/registrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registrations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": 1,\n  \"policlinic_id\": 2,\n  \"doctor_id\": 2,\n  \"visit_date\": \"2024-07-31\",\n  \"payment_type\": \"BPJS\",\n  \"initial_complaint\": \"Sakit gigi\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "4.3 Create Registration Doctor Not In Policlinic (ERROR 400)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "registrations"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"patient_id\": 1,\n  \"policlinic_id\": 2,\n  \"doctor_id\": 2,\n  \"visit_date\": \"2024-07-31\",\n  \"payment_type\": \"BPJS\",\n  \"initial_complaint\": \"Sakit gigi\"\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Dokter yang dipilih tidak bertugas di poliklinik tersebut\",\n  \"errors\": {}\n}"
+            }
+          ]
+        },
+        {
+          "name": "4.4 Update Status to CHECKED_IN (SUCCESS)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/registrations/{{registrationId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registrations",
+                "{{registrationId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CHECKED_IN\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "4.4 Update Status to CHECKED_IN (SUCCESS)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations/{{registrationId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "registrations",
+                    "{{registrationId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"CHECKED_IN\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Status pendaftaran berhasil diubah\",\n  \"data\": {\n    \"id\": 1,\n    \"status\": \"CHECKED_IN\",\n    \"registration_number\": \"REG-20240731-001\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "4.5 Invalid Status Transition Skip Step (ERROR 400)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/registrations/{{registrationId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registrations",
+                "{{registrationId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "4.5 Invalid Status Transition Skip Step (ERROR 400)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/registrations/{{registrationId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "registrations",
+                    "{{registrationId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Transisi status tidak valid dari WAITING ke COMPLETED\",\n  \"errors\": {}\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Medical Records (SOAP)",
+      "item": [
+        {
+          "name": "5.1 Create SOAP Record Draft (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/medical-records",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medical-records"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registration_id\": 1,\n  \"subjective\": \"Demam 38.5C, batuk berdahak 3 hari\",\n  \"objective\": \"KU: Cukup, Suhu: 38.5C, TD: 120/80\",\n  \"assessment\": \"ISPA (Infeksi Saluran Pernapasan Atas)\",\n  \"plan\": \"Pemberian antipiretik dan ekspektoran\",\n  \"blood_pressure\": \"120/80\",\n  \"body_temperature\": \"38.5\",\n  \"pulse\": \"88\",\n  \"weight\": \"65\",\n  \"height\": \"170\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "5.1 Create SOAP Record Draft (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/medical-records",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medical-records"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"registration_id\": 1,\n  \"subjective\": \"Demam 38.5C, batuk berdahak 3 hari\",\n  \"objective\": \"KU: Cukup, Suhu: 38.5C, TD: 120/80\",\n  \"assessment\": \"ISPA (Infeksi Saluran Pernapasan Atas)\",\n  \"plan\": \"Pemberian antipiretik dan ekspektoran\",\n  \"blood_pressure\": \"120/80\",\n  \"body_temperature\": \"38.5\",\n  \"pulse\": \"88\",\n  \"weight\": \"65\",\n  \"height\": \"170\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Rekam medis berhasil dibuat\",\n  \"data\": {\n    \"id\": 1,\n    \"registration_id\": 1,\n    \"assessment\": \"ISPA\",\n    \"status\": \"DRAFT\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "5.2 Add Medical Action (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/medical-records/{{medicalRecordId}}/actions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medical-records",
+                "{{medicalRecordId}}",
+                "actions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_name\": \"Pemeriksaan Fisik Lengkap\",\n  \"category\": \"Pemeriksaan\",\n  \"cost\": 50000,\n  \"notes\": \"Pemeriksaan vital sign\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "5.2 Add Medical Action (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/medical-records/{{medicalRecordId}}/actions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medical-records",
+                    "{{medicalRecordId}}",
+                    "actions"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action_name\": \"Pemeriksaan Fisik Lengkap\",\n  \"category\": \"Pemeriksaan\",\n  \"cost\": 50000,\n  \"notes\": \"Pemeriksaan vital sign\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Tindakan medis berhasil ditambahkan\",\n  \"data\": {\n    \"id\": 1,\n    \"medical_record_id\": 1,\n    \"action_name\": \"Pemeriksaan Fisik Lengkap\",\n    \"cost\": 50000\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "5.3 Create Prescription (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/prescriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "prescriptions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registration_id\": 1,\n  \"details\": [\n    {\n      \"medicine_id\": 1,\n      \"dosage\": \"3x1 tablet\",\n      \"frequency\": \"Setelah makan\",\n      \"quantity\": 15,\n      \"notes\": \"Demam\"\n    }\n  ]\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "5.3 Create Prescription (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/prescriptions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "prescriptions"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"registration_id\": 1,\n  \"details\": [\n    {\n      \"medicine_id\": 1,\n      \"dosage\": \"3x1 tablet\",\n      \"frequency\": \"Setelah makan\",\n      \"quantity\": 15,\n      \"notes\": \"Demam\"\n    }\n  ]\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Resep berhasil dibuat dan stok obat telah disesuaikan\",\n  \"data\": {\n    \"id\": 1,\n    \"registration_id\": 1,\n    \"details\": [\n      {\n        \"id\": 1,\n        \"medicine_id\": 1,\n        \"dosage\": \"3x1 tablet\",\n        \"quantity\": 15\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "5.4 Add Medicine Detail to Prescription (SUCCESS)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/prescriptions/{{medicalRecordId}}/details",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "prescriptions",
+                "{{medicalRecordId}}",
+                "details"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medicine_id\": 2,\n  \"dosage\": \"2x1 kapsul\",\n  \"frequency\": \"Pagi & Malam\",\n  \"quantity\": 10,\n  \"notes\": \"Antibiotik\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "5.4 Add Medicine Detail to Prescription (SUCCESS)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/prescriptions/{{medicalRecordId}}/details",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "prescriptions",
+                    "{{medicalRecordId}}",
+                    "details"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"medicine_id\": 2,\n  \"dosage\": \"2x1 kapsul\",\n  \"frequency\": \"Pagi & Malam\",\n  \"quantity\": 10,\n  \"notes\": \"Antibiotik\"\n}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Detail obat berhasil ditambahkan ke resep\",\n  \"data\": {\n    \"id\": 2,\n    \"prescription_id\": 1,\n    \"medicine_id\": 2,\n    \"quantity\": 10\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "5.5 Complete Medical Record (SUCCESS)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/medical-records/{{medicalRecordId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "medical-records",
+                "{{medicalRecordId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "5.5 Complete Medical Record (SUCCESS)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/medical-records/{{medicalRecordId}}/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "medical-records",
+                    "{{medicalRecordId}}",
+                    "status"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Pemeriksaan medis selesai\",\n  \"data\": {\n    \"id\": 1,\n    \"status\": \"COMPLETED\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Dashboard",
+      "item": [
+        {
+          "name": "6.1 Get Full Dashboard Data (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "6.1 Get Full Dashboard Data (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"metrics\": {\n      \"total_patients\": 25,\n      \"active_doctors\": 3,\n      \"low_stock_medicines\": 2,\n      \"today_registrations\": {\n        \"total\": 8,\n        \"completed\": 5,\n        \"pending\": 3\n      }\n    },\n    \"trends\": [\n      {\n        \"date\": \"2024-07-31\",\n        \"visits\": 8\n      }\n    ],\n    \"recent_registrations\": [\n      {\n        \"id\": 1,\n        \"patient_name\": \"Hendra\",\n        \"status\": \"WAITING\"\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "6.2 Get Summary Metrics (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/metrics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "metrics"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "6.2 Get Summary Metrics (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/metrics",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "metrics"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"total_patients\": 25,\n    \"active_doctors\": 3,\n    \"low_stock_medicines\": 2,\n    \"today_registrations\": {\n      \"total\": 8,\n      \"completed\": 5,\n      \"pending\": 3\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "6.3 Get Visit Trends (SUCCESS)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/trends",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "trends"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "6.3 Get Visit Trends (SUCCESS)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard/trends",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard",
+                    "trends"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"date\": \"2024-07-25\",\n      \"visits\": 6\n    },\n    {\n      \"date\": \"2024-07-31\",\n      \"visits\": 8\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
