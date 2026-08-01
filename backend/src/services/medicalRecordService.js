@@ -151,10 +151,13 @@ const createMedicalRecord = async (data, requestUser) => {
   const {
     registration_id,
     subjective,
+    objective,
     blood_pressure,
     body_temperature,
     weight,
     height,
+    pulse,
+    notes,
     assessment,
     plan,
   } = data;
@@ -175,8 +178,12 @@ const createMedicalRecord = async (data, requestUser) => {
 
   // Pastikan dokter yang login sesuai dengan dokter di registrasi
   if (requestUser.role === 'DOCTOR') {
-    const doctorProfile = requestUser.doctorProfile;
-    if (!doctorProfile || String(doctorProfile.id) !== String(registration.doctor_id)) {
+    let doctorId = requestUser.doctorProfile?.id;
+    if (!doctorId) {
+      const doc = await Doctor.findOne({ where: { user_id: requestUser.id } });
+      if (doc) doctorId = doc.id;
+    }
+    if (!doctorId || String(doctorId) !== String(registration.doctor_id)) {
       throw new AppError(
         'Access denied. You can only create medical records for your own patients.',
         403
@@ -202,10 +209,13 @@ const createMedicalRecord = async (data, requestUser) => {
         patient_id: registration.patient_id,
         doctor_id: registration.doctor_id,
         subjective,
+        objective: objective || null,
         blood_pressure: blood_pressure || null,
         body_temperature: body_temperature || null,
         weight: weight || null,
         height: height || null,
+        pulse: pulse || null,
+        notes: notes || null,
         assessment,
         plan,
         examination_date: new Date(),
@@ -246,20 +256,27 @@ const updateMedicalRecord = async (id, data, requestUser) => {
 
   // Dokter hanya bisa update rekam medisnya sendiri
   if (requestUser.role === 'DOCTOR') {
-    const doctorProfile = requestUser.doctorProfile;
-    if (!doctorProfile || String(doctorProfile.id) !== String(record.doctor_id)) {
+    let doctorId = requestUser.doctorProfile?.id;
+    if (!doctorId) {
+      const doc = await Doctor.findOne({ where: { user_id: requestUser.id } });
+      if (doc) doctorId = doc.id;
+    }
+    if (!doctorId || String(doctorId) !== String(record.doctor_id)) {
       throw new AppError('Access denied. You can only edit your own medical records.', 403);
     }
   }
 
-  const { subjective, blood_pressure, body_temperature, weight, height, assessment, plan } = data;
+  const { subjective, objective, blood_pressure, body_temperature, weight, height, pulse, notes, assessment, plan } = data;
 
   await record.update({
     ...(subjective !== undefined && { subjective }),
+    ...(objective !== undefined && { objective }),
     ...(blood_pressure !== undefined && { blood_pressure }),
     ...(body_temperature !== undefined && { body_temperature }),
     ...(weight !== undefined && { weight }),
     ...(height !== undefined && { height }),
+    ...(pulse !== undefined && { pulse }),
+    ...(notes !== undefined && { notes }),
     ...(assessment !== undefined && { assessment }),
     ...(plan !== undefined && { plan }),
   });
