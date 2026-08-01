@@ -76,6 +76,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       // SOAP — Objective: hasil pemeriksaan fisik (vital signs)
+      objective: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       blood_pressure: {
         type: DataTypes.STRING(20),
         allowNull: true,
@@ -101,6 +105,14 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           min: { args: [0], msg: 'Height cannot be negative' },
         },
+      },
+      pulse: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      notes: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
       // SOAP — Assessment: diagnosa
       assessment: {
