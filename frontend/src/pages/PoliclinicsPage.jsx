@@ -5,7 +5,7 @@ import {
   LoadingSpinner, EmptyState, Modal, Alert,
   FormField, Input, Select, Textarea, PageHeader,
 } from '../components/common/UIComponents';
-import { Plus, Edit2, Building2, Hash, ToggleLeft, ToggleRight, Search } from 'lucide-react';
+import { Plus, Edit2, Building2, Hash, ToggleLeft, ToggleRight, Search, Trash2 } from 'lucide-react';
 
 const emptyForm = () => ({ code: '', name: '', description: '', is_active: true });
 
@@ -55,6 +55,16 @@ const PoliclinicsPage = () => {
     setModal('edit');
   };
 
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Yakin ingin menghapus poliklinik "${name}"?\nCatatan: Poli tidak bisa dihapus jika masih ada data dokter atau pendaftaran yang terkait dengannya.`)) return;
+    try {
+      await api.delete(`/policlinics/${id}`);
+      fetchPoliclinics();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Gagal menghapus poliklinik.');
+    }
+  };
+
   const handleAdd = async (e) => {
     e.preventDefault();
     setFormError(''); setSubmitting(true);
@@ -62,7 +72,11 @@ const PoliclinicsPage = () => {
       await api.post('/policlinics', formData);
       setModal(null); fetchPoliclinics();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menambah poliklinik.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal menambah poliklinik.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -73,7 +87,11 @@ const PoliclinicsPage = () => {
       await api.put(`/policlinics/${selected.id}`, formData);
       setModal(null); fetchPoliclinics();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal memperbarui poliklinik.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal memperbarui poliklinik.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -83,6 +101,7 @@ const PoliclinicsPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FormField label="Kode Poli" required>
           <Input required value={formData.code}
+            disabled={modal === 'edit'}
             onChange={e => setFormData(p => ({ ...p, code: e.target.value.toUpperCase() }))}
             placeholder="UMUM" />
         </FormField>
@@ -153,9 +172,14 @@ const PoliclinicsPage = () => {
                           {p.is_active ? 'Aktif' : 'Nonaktif'}
                         </span>
                         {isAdmin && (
-                          <button onClick={() => openEdit(p)} className="btn btn-ghost btn-icon btn-sm">
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => openEdit(p)} className="btn btn-ghost btn-icon btn-sm" title="Edit Poli">
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button onClick={() => handleDelete(p.id, p.name)} className="btn btn-ghost btn-icon btn-sm text-red-500 hover:bg-red-50" title="Hapus Poli">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
