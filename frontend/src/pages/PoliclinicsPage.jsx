@@ -80,7 +80,7 @@ const PoliclinicsPage = () => {
   const PoliForm = () => (
     <div className="space-y-3">
       {formError && <Alert type="error">{formError}</Alert>}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FormField label="Kode Poli" required>
           <Input required value={formData.code}
             onChange={e => setFormData(p => ({ ...p, code: e.target.value.toUpperCase() }))}
@@ -191,7 +191,7 @@ const PoliclinicsPage = () => {
           </>
         }
       >
-        <form id="form-poli-add" onSubmit={handleAdd}><PoliForm /></form>
+        <form id="form-poli-add" onSubmit={handleAdd}>{PoliForm()}</form>
       </Modal>
 
       {/* Edit Modal */}
@@ -209,7 +209,7 @@ const PoliclinicsPage = () => {
           </>
         }
       >
-        <form id="form-poli-edit" onSubmit={handleEdit}><PoliForm /></form>
+        <form id="form-poli-edit" onSubmit={handleEdit}>{PoliForm()}</form>
       </Modal>
     </>
   );
