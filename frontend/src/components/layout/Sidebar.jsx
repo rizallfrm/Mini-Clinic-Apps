@@ -120,15 +120,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       style={{ width: '260px' }}
     >
       {/* Brand Header */}
-      <div className="flex items-center justify-between px-4 h-16 border-b border-white/5 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 h-20 border-b border-white/5 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/30">
-            <HeartPulse className="w-4.5 h-4.5 text-white animate-pulse-gentle" style={{ width: '1.125rem', height: '1.125rem' }} />
-          </div>
+          <img src="/logo.png" alt="Clinica Logo" className="w-16 h-16 object-contain flex-shrink-0 scale-125 origin-left" />
           <div>
-            <div className="text-white font-bold text-sm leading-tight">Mini Clinic</div>
+            <div className="text-white font-bold text-base leading-tight">Clinica</div>
             <div className="text-emerald-400 text-[10px] font-semibold tracking-widest uppercase">
-              Info System
+              Healthcare
             </div>
           </div>
         </div>
