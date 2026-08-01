@@ -10,8 +10,8 @@ import { Plus, Edit2, PackagePlus, AlertTriangle, Search, Pill } from 'lucide-re
 const CATEGORIES = ['Analgesik', 'Antibiotik', 'Antihipertensi', 'Antidiabetik', 'Vitamin', 'Antiseptik', 'Antiinflamasi', 'Lainnya'];
 const UNITS      = ['Tablet', 'Kapsul', 'Botol', 'Strip', 'Ampul', 'Sachet', 'Tube', 'Vial', 'Pcs'];
 
-const emptyForm     = () => ({ name: '', category: 'Lainnya', unit: 'Tablet', price: '', stock: '', min_stock: 20, description: '' });
-const emptyAdjForm  = () => ({ type: 'IN', quantity: '', notes: '' });
+const emptyForm     = () => ({ medicine_code: '', name: '', category: 'Lainnya', unit: 'Tablet', price: '', stock: '', min_stock: 20, description: '' });
+const emptyAdjForm  = () => ({ type: 'ADD', quantity: '', notes: '' });
 
 const MedicinesPage = () => {
   const { isAdmin, isDoctor } = useAuth();
@@ -48,7 +48,7 @@ const MedicinesPage = () => {
   const openAdd = () => { setFormData(emptyForm()); setFormError(''); setModal('add'); };
   const openEdit = (m) => {
     setSelected(m);
-    setFormData({ name: m.name, category: m.category, unit: m.unit, price: m.price, stock: m.stock, min_stock: m.min_stock, description: m.description || '' });
+    setFormData({ medicine_code: m.medicine_code, name: m.name, category: m.category, unit: m.unit, price: m.price, stock: m.stock, min_stock: m.min_stock, description: m.description || '' });
     setFormError('');
     setModal('edit');
   };
@@ -61,7 +61,11 @@ const MedicinesPage = () => {
       await api.post('/medicines', { ...formData, price: Number(formData.price), stock: Number(formData.stock), min_stock: Number(formData.min_stock) });
       setModal(null); fetchMedicines(1);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menyimpan obat.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal menyimpan obat.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -72,7 +76,11 @@ const MedicinesPage = () => {
       await api.put(`/medicines/${selected.id}`, { ...formData, price: Number(formData.price), stock: Number(formData.stock), min_stock: Number(formData.min_stock) });
       setModal(null); fetchMedicines(pagination.page);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal memperbarui obat.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal memperbarui obat.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -83,7 +91,11 @@ const MedicinesPage = () => {
       await api.post(`/medicines/${selected.id}/stock`, { ...adjForm, quantity: Number(adjForm.quantity) });
       setModal(null); fetchMedicines(pagination.page);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menyesuaikan stok.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal menyesuaikan stok.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -92,12 +104,20 @@ const MedicinesPage = () => {
   const MedForm = () => (
     <div className="space-y-3">
       {formError && <Alert type="error">{formError}</Alert>}
-      <FormField label="Nama Obat" required>
-        <Input required value={formData.name}
-          onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
-          placeholder="Paracetamol 500mg" />
-      </FormField>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <FormField label="Kode Obat" required>
+          <Input required value={formData.medicine_code}
+            disabled={modal === 'edit'}
+            onChange={e => setFormData(p => ({ ...p, medicine_code: e.target.value.toUpperCase().replace(/[^A-Z0-9\-_]/g, '') }))}
+            placeholder="Contoh: MED-001" />
+        </FormField>
+        <FormField label="Nama Obat" required>
+          <Input required value={formData.name}
+            onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
+            placeholder="Paracetamol 500mg" />
+        </FormField>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FormField label="Kategori" required>
           <Select value={formData.category}
             onChange={e => setFormData(p => ({ ...p, category: e.target.value }))}>
@@ -111,7 +131,7 @@ const MedicinesPage = () => {
           </Select>
         </FormField>
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <FormField label="Harga (Rp)" required>
           <Input type="number" required min="0" value={formData.price}
             onChange={e => setFormData(p => ({ ...p, price: e.target.value }))}
@@ -172,8 +192,8 @@ const MedicinesPage = () => {
                   <thead>
                     <tr>
                       <th>Nama & Kategori</th>
-                      <th className="hidden md:table-cell">Satuan</th>
-                      <th className="hidden sm:table-cell">Harga</th>
+                      <th>Satuan</th>
+                      <th>Harga</th>
                       <th>Stok</th>
                       <th className="text-right">Aksi</th>
                     </tr>
@@ -192,8 +212,8 @@ const MedicinesPage = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="hidden md:table-cell text-slate-600 text-xs">{m.unit}</td>
-                        <td className="hidden sm:table-cell">
+                        <td className="text-slate-600 text-xs">{m.unit}</td>
+                        <td>
                           <span className="text-sm font-semibold text-slate-800">
                             Rp {(parseFloat(m.price) || 0).toLocaleString('id-ID')}
                           </span>
@@ -261,7 +281,7 @@ const MedicinesPage = () => {
           </>
         }
       >
-        <form id="form-med-add" onSubmit={handleAdd}><MedForm /></form>
+        <form id="form-med-add" onSubmit={handleAdd}>{MedForm()}</form>
       </Modal>
 
       {/* Edit Modal */}
@@ -276,7 +296,7 @@ const MedicinesPage = () => {
           </>
         }
       >
-        <form id="form-med-edit" onSubmit={handleEdit}><MedForm /></form>
+        <form id="form-med-edit" onSubmit={handleEdit}>{MedForm()}</form>
       </Modal>
 
       {/* Stock Adjustment Modal */}
@@ -297,9 +317,8 @@ const MedicinesPage = () => {
           <FormField label="Tipe Penyesuaian" required>
             <Select value={adjForm.type}
               onChange={e => setAdjForm(p => ({ ...p, type: e.target.value }))}>
-              <option value="IN">Stok Masuk (Tambah)</option>
-              <option value="OUT">Stok Keluar (Kurangi)</option>
-              <option value="CORRECTION">Koreksi / Opname</option>
+              <option value="ADD">Stok Masuk (Tambah)</option>
+              <option value="SUBTRACT">Stok Keluar (Kurangi)</option>
             </Select>
           </FormField>
           <FormField label="Jumlah" required>
