@@ -52,7 +52,7 @@ const DashboardPage = () => {
   return (
     <div className="space-y-5">
       {/* Stat Cards */}
-      <div className={`grid grid-cols-2 ${user?.role === 'DOCTOR' ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-3 sm:gap-4`}>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 ${user?.role === 'DOCTOR' ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-3 sm:gap-4`}>
         <StatCard
           label={user?.role === 'DOCTOR' ? "Total Pasien Saya" : "Total Pasien"}
           value={metrics?.total_patients ?? 0}
@@ -195,7 +195,7 @@ const DashboardPage = () => {
               <tr>
                 <th>No. Registrasi</th>
                 <th>Pasien</th>
-                <th className="hidden sm:table-cell">Dokter / Poli</th>
+                <th>Dokter / Poli</th>
                 <th>Antrean</th>
                 <th>Status</th>
               </tr>
@@ -206,7 +206,7 @@ const DashboardPage = () => {
                     <tr key={reg.id}>
                       <td className="font-semibold text-slate-700">{reg.registration_number}</td>
                       <td className="font-semibold text-slate-900">{reg.patient_name}</td>
-                      <td className="hidden sm:table-cell text-slate-600">
+                      <td className="text-slate-600">
                         <div className="leading-tight">{reg.doctor_name}</div>
                         <div className="text-xs text-slate-400">{reg.policlinic_name}</div>
                       </td>
