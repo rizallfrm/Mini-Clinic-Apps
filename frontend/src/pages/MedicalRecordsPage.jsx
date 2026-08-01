@@ -23,7 +23,7 @@ const emptySOAP = () => ({
 const emptyRx = () => ({ medicine_id: '', dosage: '', frequency: '', quantity: '', notes: '' });
 
 const MedicalRecordsPage = () => {
-  const { isAdmin, isDoctor } = useAuth();
+  const { isAdmin, isDoctor, user } = useAuth();
 
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,26 +48,32 @@ const MedicalRecordsPage = () => {
     try {
       const res = await api.get('/registrations/today');
       if (res.data.success) {
-        const active = res.data.data.filter(r =>
+        let active = res.data.data.filter(r =>
           ['CHECKED_IN', 'EXAMINATION'].includes(r.status)
         );
-        setRegistrations(res.data.data);
+        // Jika yang login adalah Dokter, hanya tampilkan pasien yang ditugaskan ke dia
+        if (isDoctor && user?.id) {
+          active = active.filter(r => r.doctor?.user_id === user.id);
+        }
+        setRegistrations(active);
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isDoctor, user]);
 
   useEffect(() => { fetchRegistrations(); }, [fetchRegistrations]);
 
   const selectPatient = async (reg) => {
     setSelected(reg);
-    setExistingRecord(null);
     setLoadingRecord(true);
+    setExistingRecord(null);
     try {
       const res = await api.get(`/medical-records/by-registration/${reg.id}`);
-      if (res.data.success && res.data.data) {
+      if (res.data.success && res.data.data && res.data.data.id) {
         setExistingRecord(res.data.data);
+      } else {
+        setExistingRecord(null);
       }
     } catch { /* not found */ }
     finally { setLoadingRecord(false); }
@@ -99,28 +105,36 @@ const MedicalRecordsPage = () => {
     try {
       const payload = {
         subjective: soapData.subjective ? soapData.subjective.trim() : '',
-        objective: soapData.objective ? soapData.objective.trim() : undefined,
+        objective: soapData.objective ? soapData.objective.trim() : '',
         assessment: soapData.assessment ? soapData.assessment.trim() : '',
         plan: soapData.plan ? soapData.plan.trim() : '',
-        blood_pressure: soapData.blood_pressure ? soapData.blood_pressure.trim() : undefined,
-        body_temperature: soapData.body_temperature ? parseFloat(soapData.body_temperature) : undefined,
-        weight: soapData.weight ? parseFloat(soapData.weight) : undefined,
-        height: soapData.height ? parseFloat(soapData.height) : undefined,
-        pulse: soapData.pulse ? parseInt(soapData.pulse) : undefined,
-        notes: soapData.notes ? soapData.notes.trim() : undefined,
+        blood_pressure: soapData.blood_pressure ? soapData.blood_pressure.trim() : '',
+        body_temperature: soapData.body_temperature ? parseFloat(soapData.body_temperature) : null,
+        weight: soapData.weight ? parseFloat(soapData.weight) : null,
+        height: soapData.height ? parseFloat(soapData.height) : null,
+        pulse: soapData.pulse ? parseInt(soapData.pulse) : null,
+        notes: soapData.notes ? soapData.notes.trim() : '',
       };
 
+      let updatedRecord = null;
       if (existingRecord) {
-        await api.put(`/medical-records/${existingRecord.id}`, payload);
+        const res = await api.put(`/medical-records/${existingRecord.id}`, payload);
+        updatedRecord = res.data.data;
       } else {
-        await api.post('/medical-records', {
+        const res = await api.post('/medical-records', {
           ...payload,
           registration_id: Number(selected.id),
         });
+        updatedRecord = res.data.data;
       }
       setShowSOAPModal(false);
+      if (updatedRecord && updatedRecord.id) {
+        setExistingRecord(updatedRecord);
+      }
       await fetchRegistrations();
-      await selectPatient(selected);
+      if (selected) {
+        await selectPatient(selected);
+      }
     } catch (err) {
       const data = err.response?.data;
       if (data?.errors && typeof data.errors === 'object' && Object.keys(data.errors).length > 0) {
@@ -422,7 +436,7 @@ const MedicalRecordsPage = () => {
                         )}
 
                         {/* Complete Examination Action */}
-                        {canExamine && existingRecord.status !== 'COMPLETED' && (
+                        {canExamine && existingRecord.status !== 'COMPLETED' && existingRecord.prescription && (
                           <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
                             <button onClick={handleCompleteRecord} disabled={submitting} className="btn text-white bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto gap-2">
                               <CheckCircle2 className="w-4 h-4" />
