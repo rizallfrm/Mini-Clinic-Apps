@@ -77,11 +77,18 @@ const DoctorsPage = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     setFormError(''); setSubmitting(true);
+    const payload = { ...formData };
+    if (!payload.phone) delete payload.phone;
+    payload.policlinic_id = Number(payload.policlinic_id);
     try {
-      await api.post('/doctors', formData);
+      await api.post('/doctors', payload);
       setModal(null); fetchDoctors();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menambah dokter.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal menambah dokter.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -90,11 +97,17 @@ const DoctorsPage = () => {
     setFormError(''); setSubmitting(true);
     const payload = { ...formData };
     if (!payload.password) delete payload.password;
+    if (!payload.phone) delete payload.phone;
+    payload.policlinic_id = Number(payload.policlinic_id);
     try {
       await api.put(`/doctors/${selected.id}`, payload);
       setModal(null); fetchDoctors();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal memperbarui data dokter.');
+      const data = err.response?.data;
+      const errorMsg = data?.errors && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(', ')
+        : data?.message || 'Gagal memperbarui dokter.';
+      setFormError(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -109,12 +122,14 @@ const DoctorsPage = () => {
       <FormField label="Email Login" required>
         <Input type="email" required value={formData.email}
           onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
-          placeholder="dokter@klinik.com" />
+          placeholder="dokter@clinica.com" />
       </FormField>
       <FormField label={isEdit ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password'} required={!isEdit}>
         <Input type="password" required={!isEdit} value={formData.password}
           onChange={e => setFormData(p => ({ ...p, password: e.target.value }))}
-          placeholder={isEdit ? 'Kosongkan jika tidak diubah' : 'Min. 8 karakter'} />
+          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+          title="Minimal 8 karakter, wajib mengandung huruf besar, huruf kecil, dan angka."
+          placeholder={isEdit ? 'Kosongkan jika tidak diubah' : 'Min 8 kar, huruf besar, kecil & angka'} />
       </FormField>
       <FormField label="Spesialisasi" required>
         <Select value={formData.specialization}
@@ -122,9 +137,9 @@ const DoctorsPage = () => {
           {SPECIALIZATIONS.map(s => <option key={s} value={s}>{s}</option>)}
         </Select>
       </FormField>
-      <div className="grid grid-cols-2 gap-3">
-        <FormField label="Poliklinik">
-          <Select value={formData.policlinic_id}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <FormField label="Poliklinik" required>
+          <Select required value={formData.policlinic_id}
             onChange={e => setFormData(p => ({ ...p, policlinic_id: e.target.value }))}>
             <option value="">-- Pilih Poli --</option>
             {policlinics.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -239,7 +254,7 @@ const DoctorsPage = () => {
           </>
         }
       >
-        <form id="form-doc-add" onSubmit={handleAdd}><DoctorForm isEdit={false} /></form>
+        <form id="form-doc-add" onSubmit={handleAdd}>{DoctorForm({ isEdit: false })}</form>
       </Modal>
 
       {/* Edit Modal */}
@@ -254,7 +269,7 @@ const DoctorsPage = () => {
           </>
         }
       >
-        <form id="form-doc-edit" onSubmit={handleEdit}><DoctorForm isEdit /></form>
+        <form id="form-doc-edit" onSubmit={handleEdit}>{DoctorForm({ isEdit: true })}</form>
       </Modal>
     </>
   );
