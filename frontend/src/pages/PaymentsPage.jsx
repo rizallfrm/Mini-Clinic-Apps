@@ -100,7 +100,7 @@ const PaymentsPage = () => {
         </head>
         <body>
           <div class="header">
-            <div class="clinic-title">KLINIK MINI INFORMATION SYSTEM</div>
+            <div class="clinic-title">CLINICA HEALTHCARE SYSTEM</div>
             <div class="clinic-sub">Jl. Kesehatan No. 123, Jakarta · Telp: (021) 555-0199</div>
           </div>
           <div class="inv-title">KUITANSI PEMBAYARAN (${invoice.payment?.payment_number || 'INV-DRAFT'})</div>
