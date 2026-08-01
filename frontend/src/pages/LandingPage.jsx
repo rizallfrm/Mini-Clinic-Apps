@@ -58,12 +58,10 @@ const LandingPage = () => {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
-              <HeartPulse className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-800 tracking-tight">
-              Klinik Sehat
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Clinica Logo" className="w-16 h-16 object-contain scale-125 origin-left" />
+            <span className="text-2xl font-extrabold text-slate-800 tracking-tight">
+              Clinica
             </span>
           </div>
           
@@ -171,7 +169,7 @@ const LandingPage = () => {
               </div>
               
               <div className="scroll-animate">
-                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Kenapa Memilih Klinik Sehat?</h2>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Kenapa Memilih Clinica?</h2>
                 <p className="text-lg text-slate-600 mb-10 leading-relaxed">
                   Kami memadukan keahlian medis dengan teknologi modern untuk memberikan pengalaman berobat yang aman, nyaman, dan transparan.
                 </p>
@@ -215,11 +213,9 @@ const LandingPage = () => {
       <footer id="kontak" className="bg-slate-900 pt-20 pb-10 text-slate-400 relative z-10">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 mb-16">
           <div>
-            <div className="flex items-center gap-2.5 mb-6">
-              <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
-                <HeartPulse className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-extrabold text-white tracking-tight">Klinik Sehat</span>
+            <div className="flex items-center gap-3 mb-6">
+              <img src="/logo.png" alt="Clinica Logo" className="w-16 h-16 object-contain scale-125 origin-left" />
+              <span className="text-2xl font-extrabold text-white tracking-tight">Clinica</span>
             </div>
             <p className="leading-relaxed text-sm max-w-sm">
               Sistem Informasi Klinik modern dengan integrasi rekam medis dan pemantauan antrean real-time.
@@ -239,7 +235,7 @@ const LandingPage = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                <span>halo@kliniksehat.com</span>
+                <span>halo@clinica.com</span>
               </div>
             </div>
           </div>
@@ -264,7 +260,7 @@ const LandingPage = () => {
         </div>
         
         <div className="max-w-7xl mx-auto px-6 border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-          <p>&copy; 2026 Klinik Sehat. Hak cipta dilindungi undang-undang.</p>
+          <p>&copy; 2026 Clinica. Hak cipta dilindungi undang-undang.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-emerald-400 transition-colors">Kebijakan Privasi</a>
             <a href="#" className="hover:text-emerald-400 transition-colors">Syarat & Ketentuan</a>
