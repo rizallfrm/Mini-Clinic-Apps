@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   HeartPulse, Lock, Mail, ArrowRight,
   Shield, Stethoscope, UserCheck, AlertCircle, Eye, EyeOff,
@@ -9,11 +10,12 @@ import {
 const DEMO_ACCOUNTS = [
   { role: 'Admin',   email: 'admin@clinic.com',   password: 'Admin123!',   icon: Shield,      color: 'from-rose-500 to-pink-600' },
   { role: 'Dokter',  email: 'doctor@clinic.com',  password: 'Doctor123!',  icon: Stethoscope, color: 'from-emerald-500 to-teal-600' },
-  { role: 'Petugas', email: 'officer@clinic.com', password: 'Officer123!', icon: UserCheck,   color: 'from-indigo-500 to-blue-600' },
+  { role: 'Petugas', email: 'staff@clinic.com', password: 'Staff123!', icon: UserCheck,   color: 'from-indigo-500 to-blue-600' },
 ];
 
 const LoginPage = () => {
   const { login } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isExpired = searchParams.get('expired') === 'true';
@@ -30,9 +32,14 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const res = await login(email, password);
-      if (res.success) navigate('/dashboard');
+      if (res.success) {
+        toast.success('Selamat datang kembali di Clinica!');
+        navigate('/dashboard');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Email atau kata sandi salah. Periksa kembali dan coba lagi.');
+      const msg = err.response?.data?.message || 'Email atau kata sandi salah. Periksa kembali dan coba lagi.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
