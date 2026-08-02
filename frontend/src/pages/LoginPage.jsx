@@ -7,11 +7,6 @@ import {
   Shield, Stethoscope, UserCheck, AlertCircle, Eye, EyeOff,
 } from 'lucide-react';
 
-const DEMO_ACCOUNTS = [
-  { role: 'Admin',   email: 'admin@clinic.com',   password: 'Admin123!',   icon: Shield,      color: 'from-rose-500 to-pink-600' },
-  { role: 'Dokter',  email: 'doctor@clinic.com',  password: 'Doctor123!',  icon: Stethoscope, color: 'from-emerald-500 to-teal-600' },
-  { role: 'Petugas', email: 'staff@clinic.com', password: 'Staff123!', icon: UserCheck,   color: 'from-indigo-500 to-blue-600' },
-];
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -166,7 +161,7 @@ const LoginPage = () => {
                       required
                       value={email}
                       onChange={e => setEmail(e.target.value)}
-                      placeholder="nama@clinica.com"
+                      placeholder="nama@gmail.com"
                       autoComplete="email"
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none transition"
                       style={{
@@ -241,7 +236,7 @@ const LoginPage = () => {
               </form>
 
               {/* Demo accounts */}
-              <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+              {/* <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
                 <p className="text-center text-[11px] text-slate-500 mb-3 font-medium uppercase tracking-wider">
                   Login Demo Cepat
                 </p>
@@ -269,7 +264,7 @@ const LoginPage = () => {
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
