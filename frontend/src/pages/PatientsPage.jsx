@@ -82,6 +82,7 @@ const emptyForm = () => ({ nik: '', name: '', gender: 'MALE', birth_date: '', ph
 
 const PatientsPage = () => {
   const { isAdmin, isOfficer } = useAuth();
+  const toast = useToast();
   const canWrite = isAdmin || isOfficer;
 
   const [patients, setPatients] = useState([]);
