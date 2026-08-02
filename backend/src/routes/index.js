@@ -25,37 +25,37 @@ const router = express.Router();
 // Health check
 router.use('/health', healthCheckRouter);
 
-// Auth routes (Tahap 7) ✅
+// Auth routes
 router.use('/auth', authRouter);
 
-// User routes (Admin CRUD) ✅
+// User routes (Admin CRUD)
 router.use('/users', userRouter);
 
-// Patient routes (Tahap 8) ✅
+// Patient routes
 router.use('/patients', patientRouter);
 
-// Master data routes (Tahap 9) ✅
+// Master data routes
 router.use('/policlinics', policlinicRouter);
 router.use('/doctors', doctorRouter);
 router.use('/medicines', medicineRouter);
 
-// Registration routes (Tahap 10) ✅
+// Registration routes
 router.use('/registrations', registrationRouter);
 
-// Queue routes (Tahap 11) ✅
+// Queue routes
 router.use('/queues', queueRouter);
 
-// Payment & Billing routes ✅
+// Payment & Billing routes
 router.use('/payments', paymentRouter);
 
-// Report & Analytics routes ✅
+// Report & Analytics routes
 router.use('/reports', reportRouter);
 
-// Medical Record routes (Tahap 12) ✅
+// Medical Record routes
 router.use('/medical-records', medicalRecordRouter);
 router.use('/prescriptions', prescriptionRouter);
 
-// Dashboard routes (Tahap 12) ✅
+// Dashboard routes
 router.use('/dashboard', dashboardRouter);
 
 module.exports = router;
