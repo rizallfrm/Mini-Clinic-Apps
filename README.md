@@ -91,10 +91,11 @@ mini-clinic-information-system/
 │   ├── .env.example        # Template konfigurasi variabel lingkungan frontend
 │   └── package.json
 ├── database/                 # Export Database SQL (.sql)
+├── docs/                     # Dokumen ERD
 ├── postman/                  # Postman Collection JSON
 ├── .gitignore                # Pengecualian file sensitif (.env)
 ├── README.md                 # Dokumentasi utama proyek
-└── README_DEMO.md            # Duplikat dokumentasi & referensi demo akun
+
 ```
 
 ---
