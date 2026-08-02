@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, EmptyState, Modal, Alert, RoleBadge,
   FormField, Input, Select, PageHeader,
@@ -21,6 +22,7 @@ const emptyForm = () => ({
 
 const DoctorsPage = () => {
   const { isAdmin } = useAuth();
+  const toast = useToast();
 
   const [doctors, setDoctors]       = useState([]);
   const [filtered, setFiltered]     = useState([]);
@@ -69,7 +71,15 @@ const DoctorsPage = () => {
   const openAdd = () => { setFormData(emptyForm()); setFormError(''); setModal('add'); };
   const openEdit = (d) => {
     setSelected(d);
-    setFormData({ name: d.name, email: d.email, password: '', specialization: d.specialization || 'Dokter Umum', phone: d.phone || '', policlinic_id: d.policlinic_id || '', is_active: d.is_active });
+    setFormData({
+      name: d.name || '',
+      email: d.email || '',
+      password: '',
+      specialization: d.specialization || 'Dokter Umum',
+      phone: d.phone || '',
+      policlinic_id: d.policlinic_id || '',
+      is_active: d.is_active ?? true,
+    });
     setFormError('');
     setModal('edit');
   };
@@ -82,6 +92,7 @@ const DoctorsPage = () => {
     payload.policlinic_id = Number(payload.policlinic_id);
     try {
       await api.post('/doctors', payload);
+      toast.success('Data dokter berhasil ditambahkan!');
       setModal(null); fetchDoctors();
     } catch (err) {
       const data = err.response?.data;
@@ -89,6 +100,7 @@ const DoctorsPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal menambah dokter.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -101,6 +113,7 @@ const DoctorsPage = () => {
     payload.policlinic_id = Number(payload.policlinic_id);
     try {
       await api.put(`/doctors/${selected.id}`, payload);
+      toast.success('Data dokter berhasil diperbarui!');
       setModal(null); fetchDoctors();
     } catch (err) {
       const data = err.response?.data;
@@ -108,6 +121,7 @@ const DoctorsPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal memperbarui dokter.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -115,31 +129,31 @@ const DoctorsPage = () => {
     <div className="space-y-3">
       {formError && <Alert type="error">{formError}</Alert>}
       <FormField label="Nama Lengkap" required>
-        <Input required value={formData.name}
+        <Input required value={formData.name || ''}
           onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
           placeholder="dr. Adi Santoso, Sp.PD" />
       </FormField>
       <FormField label="Email Login" required>
-        <Input type="email" required value={formData.email}
+        <Input type="email" required value={formData.email || ''}
           onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
           placeholder="dokter@clinica.com" />
       </FormField>
       <FormField label={isEdit ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password'} required={!isEdit}>
-        <Input type="password" required={!isEdit} value={formData.password}
+        <Input type="password" required={!isEdit} value={formData.password || ''}
           onChange={e => setFormData(p => ({ ...p, password: e.target.value }))}
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
           title="Minimal 8 karakter, wajib mengandung huruf besar, huruf kecil, dan angka."
           placeholder={isEdit ? 'Kosongkan jika tidak diubah' : 'Min 8 kar, huruf besar, kecil & angka'} />
       </FormField>
       <FormField label="Spesialisasi" required>
-        <Select value={formData.specialization}
+        <Select value={formData.specialization || 'Dokter Umum'}
           onChange={e => setFormData(p => ({ ...p, specialization: e.target.value }))}>
           {SPECIALIZATIONS.map(s => <option key={s} value={s}>{s}</option>)}
         </Select>
       </FormField>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FormField label="Poliklinik" required>
-          <Select required value={formData.policlinic_id}
+          <Select required value={formData.policlinic_id || ''}
             onChange={e => setFormData(p => ({ ...p, policlinic_id: e.target.value }))}>
             <option value="">-- Pilih Poli --</option>
             {policlinics.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -154,7 +168,7 @@ const DoctorsPage = () => {
         </FormField>
       </div>
       <FormField label="No. Telepon (Opsional)">
-        <Input type="text" value={formData.phone}
+        <Input type="text" value={formData.phone || ''}
           onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
           placeholder="08123456789" />
       </FormField>
