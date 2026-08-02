@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, StatusBadge, EmptyState, Modal,
   Alert, FormField, Input, Select, Textarea, PageHeader,
@@ -34,6 +35,7 @@ const emptyForm = () => ({
 
 const RegistrationsPage = () => {
   const { isAdmin, isOfficer } = useAuth();
+  const toast = useToast();
   const canWrite = isAdmin || isOfficer;
 
   const [registrations, setRegistrations] = useState([]);
@@ -87,19 +89,24 @@ const RegistrationsPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.post('/registrations', formData);
+      toast.success('Pendaftaran pasien baru berhasil dibuat!');
       setModal(false);
       fetchRegistrations();
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal membuat pendaftaran.');
+      const msg = err.response?.data?.message || 'Gagal membuat pendaftaran.';
+      setFormError(msg);
+      toast.error(msg);
     } finally { setSubmitting(false); }
   };
 
   const handleStatus = async (id, status) => {
     try {
       await api.patch(`/registrations/${id}/status`, { status });
+      toast.success(`Status antrean berhasil diperbarui menjadi ${status}`);
       fetchRegistrations();
     } catch (err) {
-      alert(err.response?.data?.message || 'Gagal mengubah status.');
+      const msg = err.response?.data?.message || 'Gagal mengubah status.';
+      toast.error(msg);
     }
   };
 
