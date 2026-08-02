@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, Pagination, StatusBadge, EmptyState,
   Modal, Alert, FormField, Input, Select, Textarea, PageHeader,
@@ -143,9 +144,12 @@ const PatientsPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.post('/patients', formData);
+      toast.success('Data pasien baru berhasil ditambahkan!');
       closeModal(); fetchPatients(1);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menyimpan data pasien.');
+      const msg = err.response?.data?.message || 'Gagal menyimpan data pasien.';
+      setFormError(msg);
+      toast.error(msg);
     } finally { setSubmitting(false); }
   };
 
@@ -154,9 +158,12 @@ const PatientsPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.put(`/patients/${selected.id}`, { name: formData.name, gender: formData.gender, birth_date: formData.birth_date, phone: formData.phone, address: formData.address });
+      toast.success('Data pasien berhasil diperbarui!');
       closeModal(); fetchPatients(pagination.page);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal memperbarui data pasien.');
+      const msg = err.response?.data?.message || 'Gagal memperbarui data pasien.';
+      setFormError(msg);
+      toast.error(msg);
     } finally { setSubmitting(false); }
   };
 
