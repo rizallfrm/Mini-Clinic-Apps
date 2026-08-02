@@ -96,7 +96,6 @@ const testModels = async () => {
     if (allPassed) {
       console.log('================================================');
       console.log('✅ All models and associations verified!        ');
-      console.log('   Lanjut ke Tahap 6 (Seeders).                ');
       console.log('================================================');
     } else {
       console.log('================================================');

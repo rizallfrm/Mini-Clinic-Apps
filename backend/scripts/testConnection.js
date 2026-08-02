@@ -63,7 +63,7 @@ const runTest = async () => {
     console.log(`   PostgreSQL: ${info.version.split(',')[0]}`);
     console.log('');
     console.log('================================================');
-    console.log('✅ Database siap digunakan. Lanjut ke Tahap 4!  ');
+    console.log('✅ Database siap digunakan.');
     console.log('================================================');
     console.log('');
   } catch (error) {
