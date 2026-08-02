@@ -10,9 +10,9 @@ Aplikasi ini mensimulasikan alur kerja harian sebuah klinik — dari pasien data
 
 | Role | Akun Demo | Bisa Melakukan |
 |---|---|---|
-| **Admin** | `admin@clinic.com` | Semua fitur + kelola master data |
-| **Dokter** | `doctor@clinic.com` | Periksa pasien, isi SOAP, buat resep |
-| **Petugas Pendaftaran** | `officer@clinic.com` | Daftarkan pasien, kelola antrean |
+| **Admin** | `admin@gmail.com` | Semua fitur + kelola master data |
+| **Dokter** | `doctor@gmail.com` | Periksa pasien, isi SOAP, buat resep |
+| **Petugas Pendaftaran** | `staff@gmail.com` | Daftarkan pasien, kelola antrean |
 
 ---
 
