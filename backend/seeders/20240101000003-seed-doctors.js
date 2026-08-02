@@ -1,13 +1,16 @@
 'use strict';
 
+require('dotenv').config();
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
+    const doctorEmail = process.env.SEED_DOCTOR_EMAIL || 'doctor@gmail.com';
 
     // Ambil user_id dokter berdasarkan email
     const [users] = await queryInterface.sequelize.query(
-      `SELECT id, email FROM users WHERE email IN ('doctor@clinic.com', 'doctor2@clinic.com') ORDER BY id ASC`
+      `SELECT id, email FROM users WHERE email IN ('${doctorEmail}', 'doctor2@gmail.com') ORDER BY id ASC`
     );
 
     // Ambil policlinic_id berdasarkan code
@@ -33,7 +36,7 @@ module.exports = {
 
     await queryInterface.bulkInsert('doctors', [
       {
-        user_id: userMap['doctor@clinic.com'],
+        user_id: userMap[doctorEmail],
         policlinic_id: policlinicMap['POL-UMUM'],
         doctor_code: 'DR-001',
         name: 'Dr. Ahmad Fauzi, Sp.U',
@@ -44,7 +47,7 @@ module.exports = {
         updated_at: now,
       },
       {
-        user_id: userMap['doctor2@clinic.com'],
+        user_id: userMap['doctor2@gmail.com'],
         policlinic_id: policlinicMap['POL-GIGI'],
         doctor_code: 'DR-002',
         name: 'Dr. Sari Dewi, drg',

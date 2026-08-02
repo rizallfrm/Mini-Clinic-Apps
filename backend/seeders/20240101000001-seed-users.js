@@ -1,19 +1,28 @@
 'use strict';
 
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     const saltRounds = 12;
-
     const now = new Date();
+
+    const adminEmail = process.env.SEED_ADMIN_EMAIL ;
+    const adminPassword = process.env.SEED_ADMIN_PASSWORD ;
+
+    const doctorEmail = process.env.SEED_DOCTOR_EMAIL ;
+    const doctorPassword = process.env.SEED_DOCTOR_PASSWORD ;
+
+    const staffEmail = process.env.SEED_STAFF_EMAIL;
+    const staffPassword = process.env.SEED_STAFF_PASSWORD ;
 
     await queryInterface.bulkInsert('users', [
       {
         name: 'Administrator',
-        email: 'admin@clinic.com',
-        password: bcrypt.hashSync('Admin123!', saltRounds),
+        email: adminEmail,
+        password: bcrypt.hashSync(adminPassword, saltRounds),
         role: 'ADMIN',
         is_active: true,
         created_at: now,
@@ -21,8 +30,8 @@ module.exports = {
       },
       {
         name: 'Dr. Ahmad Fauzi, Sp.U',
-        email: 'doctor@clinic.com',
-        password: bcrypt.hashSync('Doctor123!', saltRounds),
+        email: doctorEmail,
+        password: bcrypt.hashSync(doctorPassword, saltRounds),
         role: 'DOCTOR',
         is_active: true,
         created_at: now,
@@ -30,8 +39,8 @@ module.exports = {
       },
       {
         name: 'Dr. Sari Dewi, drg',
-        email: 'doctor2@clinic.com',
-        password: bcrypt.hashSync('Doctor123!', saltRounds),
+        email: 'doctor2@gmail.com',
+        password: bcrypt.hashSync(doctorPassword, saltRounds),
         role: 'DOCTOR',
         is_active: true,
         created_at: now,
@@ -39,8 +48,8 @@ module.exports = {
       },
       {
         name: 'Budi Santoso',
-        email: 'staff@clinic.com',
-        password: bcrypt.hashSync('Staff123!', saltRounds),
+        email: staffEmail,
+        password: bcrypt.hashSync(staffPassword, saltRounds),
         role: 'REGISTRATION_OFFICER',
         is_active: true,
         created_at: now,
@@ -48,18 +57,17 @@ module.exports = {
       },
     ]);
 
-    console.log('✅ Seeder users: 4 users inserted.');
+    console.log('✅ Seeder users: 4 users inserted using env configuration.');
   },
 
   async down(queryInterface, Sequelize) {
+    const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@gmail.com';
+    const doctorEmail = process.env.SEED_DOCTOR_EMAIL || 'doctor@gmail.com';
+    const staffEmail = process.env.SEED_STAFF_EMAIL || 'staff@gmail.com';
+
     await queryInterface.bulkDelete('users', {
       email: {
-        [Sequelize.Op.in]: [
-          'admin@clinic.com',
-          'doctor@clinic.com',
-          'doctor2@clinic.com',
-          'staff@clinic.com',
-        ],
+        [Sequelize.Op.in]: [adminEmail, doctorEmail, 'doctor2@gmail.com', staffEmail],
       },
     });
   },

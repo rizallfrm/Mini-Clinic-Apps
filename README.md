@@ -2,199 +2,239 @@
 
 Aplikasi Sistem Informasi Manajemen Klinik Pratama berbasis web terintegrasi yang dibangun menggunakan **React.js**, **Node.js (Express.js)**, **PostgreSQL (Sequelize ORM)**, dan **JSON Web Token (JWT) Authentication**.
 
-Dokumen ini disusun untuk memenuhi seluruh kriteria *Technical Assignment Programmer (Take Home Test)*.
-
 ---
 
 ## 📌 Daftar Isi
-1. [Cara Instalasi Aplikasi](#1-cara-instalasi-aplikasi)
-2. [Cara Menjalankan Aplikasi](#2-cara-menjalankan-aplikasi)
-3. [Struktur Project](#3-struktur-project)
-4. [Akun Login (Demo Credentials)](#4-akun-login-demo-credentials)
-5. [Konfigurasi File `.env`](#5-konfigurasi-file-env)
-6. [Cara Melakukan Migrasi & Seeding Database](#6-cara-melakukan-migrasi--seeding-database)
-7. [Ketentuan Keamanan (.env.example)](#7-ketentuan-keamanan-envexample)
+- [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
+- [Keamanan Credential & Rahasia Data](#-keamanan-credential--rahasia-data)
+- [Fitur Utama & Alur Kerja Aplikasi (*App Flow*)](#-fitur-utama--alur-kerja-aplikasi-app-flow)
+- [Struktur Project](#-struktur-project)
+- [Template Konfigurasi `.env.example`](#-template-konfigurasi-envexample)
+- [Cara Instalasi Aplikasi](#-cara-instalasi-aplikasi)
+- [Migrasi & Seeding Database](#-migrasi--seeding-database)
+- [Cara Menjalankan Aplikasi](#-cara-menjalankan-aplikasi)
+- [Akun Login (Demo Roles)](#-akun-login-demo-roles)
+- [Postman Collection](#-postman-collection)
 
 ---
 
-## 1. Cara Instalasi Aplikasi
+## 🚀 Teknologi yang Digunakan
 
-### Prasyarat Sistem
-- **Node.js**: v18.x atau versi lebih baru
-- **PostgreSQL**: v14.x atau versi lebih baru
-- **Git**
+| Komponen | Teknologi |
+| :--- | :--- |
+| **Frontend** | React.js (Vite), Tailwind CSS, Lucide React, Context API, Axios |
+| **Backend** | Node.js, Express.js |
+| **Database** | PostgreSQL, Sequelize ORM |
+| **Autentikasi** | JSON Web Token (JWT), bcryptjs (Role-Based Access Control / RBAC) |
+| **Version Control** | Git |
 
-### Langkah Instalasi
+## 🔄 Fitur Utama & Alur Kerja Aplikasi (*App Flow*)
 
-```bash
-# 1. Clone repositori Git
-git clone https://github.com/username/mini-clinic-information-system.git
-cd mini-clinic-information-system
-
-# 2. Install dependensi Backend
-cd backend
-npm install
-
-# 3. Install dependensi Frontend
-cd ../frontend
-npm install
 ```
+[1. Master Data Admin] ➔ [2. Pendaftaran Pasien & Antrean] ➔ [3. Pemanggilan Antrean Audio]
+                                                                        │
+[6. Laporan Klinik & Cetak] ◄─ [5. Pembayaran Kasir & Kuitansi] ◄─ [4. Pemeriksaan SOAP & Resep Dokter]
+```
+
+### 1. **Autentikasi & Authorization (RBAC)**
+- Login multi-role: **ADMIN**, **DOCTOR**, **REGISTRATION_OFFICER (Petugas)**, **PHARMACIST**, dan **CASHIER**.
+- Keamanan rahasia JWT & database menggunakan variabel lingkungan (`process.env`).
+
+### 2. **Master Data Pasien**
+- Pencatatan NIK (Validasi Unik), Nama, Gender, Tgl Lahir, HP, Alamat.
+- **Nomor Rekam Medis (No. RM)** otomatis ter-generate (`RM-YYYYMMDD-XXX`).
+- Pencarian *real-time*, *pagination*, dan modal riwayat pemeriksaan medis.
+
+### 3. **Pendaftaran & Antrean Pasien**
+- Pendaftaran kunjungan ke Poliklinik & Dokter tujuan.
+- Penerbitan **Nomor Antrean Otomatis** (misal: `A001`).
+- Layar Antrean Live dengan **Panggilan Suara Otomatis (Text-to-Speech)** dalam Bahasa Indonesia.
+
+### 4. **Pemeriksaan Dokter (SOAP & Resep Obat)**
+- Pencatatan Medis Berbasis **SOAP**:
+  - **Subjective (S)**: Keluhan Pasien.
+  - **Objective (O) & Vital Signs**: Tanda-tanda vital lengkap (TD, Suhu, Nadi, Berat, Tinggi Badan, & Catatan Alergi).
+  - **Assessment (A)**: Diagnosa Medis.
+  - **Plan (P)**: Rencana Terapi & Edukasi.
+- **Resep Obat**: Pemilihan sediaan obat, dosis, frekuensi, dan jumlah unit.
+- Alur runtut: Tombol **Selesaikan Pemeriksaan** aktif setelah resep disimpan.
+
+### 5. **Kasir, Pembayaran & Pelaporan**
+- Pelunasan pembayaran tagihan konsultasi & obat.
+- Cetak Kuitansi Pembayaran Resmi.
+- Laporan Klinik: Filter Periode Cepat (**Harian**, **Mingguan**, **Bulanan**, **Custom**), Omzet, Pemakaian Obat, dan **Cetak Laporan PDF Resmi**.
 
 ---
 
-## 2. Cara Menjalankan Aplikasi
-
-Aplikasi membutuhkan **dua terminal** terpisah (Terminal 1 untuk Backend API, Terminal 2 untuk Frontend Client).
-
-### Terminal 1: Jalankan Backend API
-```bash
-cd backend
-npm run dev
-```
-> Server Backend REST API akan berjalan pada: **`http://localhost:5000`**
-
-### Terminal 2: Jalankan Frontend App
-```bash
-cd frontend
-npm run dev
-```
-> Aplikasi Web Client React akan berjalan pada: **`http://localhost:5173`**
-
----
-
-## 3. Struktur Project
+## 📂 Struktur Project
 
 ```
 mini-clinic-information-system/
-├── backend/                  # REST API Service (Node.js + Express.js)
+├── backend/
 │   ├── src/
 │   │   ├── config/          # Konfigurasi database & Sequelize via process.env
 │   │   ├── controllers/     # Controller handler REST API
-│   │   ├── middlewares/    # Auth JWT & Role Validation middlewares
+│   │   ├── middlewares/    # Auth, JWT, & Role Validation middlewares
 │   │   ├── models/         # Model Sequelize (User, Patient, Doctor, Policlinic, etc.)
 │   │   ├── routes/         # Router Express (/api/auth, /api/patients, /api/queues, etc.)
-│   │   ├── services/       # Layer logika bisnis & database query
+│   │   ├── services/       # Service layer logika bisnis
 │   │   ├── utils/          # Helper response & pagination
 │   │   ├── validators/     # Express validator & data sanitizer
-│   │   ├── app.js          # Express app & CORS config
+│   │   ├── app.js          # Inisialisasi Express & CORS
 │   │   └── server.js       # Entry point server HTTP backend
 │   ├── migrations/         # Migration database Sequelize
-│   ├── seeders/            # Seeder data awal & demo
-│   ├── .env.example        # Template konfigurasi variabel lingkungan backend
+│   ├── seeders/            # Seeder data awal (Membaca kredensial dari process.env)
+│   ├── .env.example        # Template variabel lingkungan backend
 │   └── package.json
-├── frontend/                 # Client Interface (React.js + Vite + Tailwind CSS)
+├── frontend/
 │   ├── src/
-│   │   ├── components/     # UI Components (Sidebar, Navbar, Modal, FormField, Toast, dll)
+│   │   ├── components/     # UI Components (Sidebar, Navbar, Modal, FormField, Toast, etc.)
 │   │   ├── context/        # AuthContext & ToastContext (Toast Confirm System)
-│   │   ├── pages/          # Halaman Utama (LoginPage, Dashboard, Patients, SOAP, dll)
-│   │   ├── services/       # Axios API Client Instance
-│   │   ├── App.jsx         # Router & Route Guards
+│   │   ├── pages/          # Pages (LoginPage, DashboardPage, PatientsPage, etc.)
+│   │   ├── services/       # API Axios client Instance
+│   │   ├── App.jsx         # Router & Guarded Routes
 │   │   └── main.jsx        # Entry point React Vite
-│   ├── .env.example        # Template konfigurasi variabel lingkungan frontend
+│   ├── .env.example        # Template variabel lingkungan frontend
 │   └── package.json
-├── database/                 # Export Database SQL (.sql)
-├── postman/                  # Postman Collection JSON
-├── .gitignore                # Pengecualian file sensitif (.env)
-└── README.md                 # Dokumentasi utama proyek
+├── database/               # File export database (.sql)
+├── postman/                # File Postman Collection (.json)
+├── .gitignore              # Memastikan file .env tidak ter-commit
+└── README.md               # Dokumentasi utama proyek
 ```
 
 ---
 
-## 4. Akun Login (Demo Credentials)
+## ⚙️ Template Konfigurasi `.env.example`
 
-Untuk menguji seluruh alur pelayanan klinik dan otorisasi *Role-Based Access Control (RBAC)*, gunakan akun demo berikut yang telah di-generate oleh seeder:
+Salin file `.env.example` menjadi `.env` pada folder `backend/` dan sesuaikan nilainya di mesin lokal Anda:
 
-| Role Pengguna | Email Login | Password Default | Hak Akses Utama |
-| :--- | :--- | :--- | :--- |
-| **Administrator** | `admin@gmail.com` | `Admin123!` | Kelola Master Data, Poliklinik, Dokter, User, & Laporan Klinik |
-| **Dokter Spesialis** | `doctor@gmail.com` | `Doctor123!` | Pemeriksaan SOAP, Tanda Vital, Resep Obat, & Dashboard Dokter |
-| **Petugas Pendaftaran** | `staff@gmail.com` | `Staff123!` | Registrasi Pasien Baru, Kunjungan Poli, & Panggilan Antrean Audio |
-
----
-
-## 5. Konfigurasi File `.env`
-
-Aplikasi membaca kredensial database dan rahasia aplikasi secara aman menggunakan `process.env`. 
-
-### A. Konfigurasi Backend (`backend/.env`)
-Buat file `.env` di folder `backend/` dengan menyalin file `backend/.env.example`:
-
+### Backend `backend/.env.example`
 ```env
 # =====================================================
-# APPLICATION CONFIGURATION
+# APPLICATION
 # =====================================================
 NODE_ENV=development
 PORT=5000
 
 # =====================================================
-# DATABASE CONFIGURATION (Local PostgreSQL)
+# DATABASE (Local PostgreSQL)
 # =====================================================
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=mini_clinic_db
-DB_USER=postgres
-DB_PASSWORD=1234
+DB_USER=your_postgres_username
+DB_PASSWORD=your_postgres_password
 
 # =====================================================
 # DEFAULT SEED ACCOUNTS (ENVIRONMENT VARIABLES)
 # =====================================================
 SEED_ADMIN_EMAIL=admin@gmail.com
-SEED_ADMIN_PASSWORD=Admin123!
+SEED_ADMIN_PASSWORD=your_secure_admin_password
 
 SEED_DOCTOR_EMAIL=doctor@gmail.com
-SEED_DOCTOR_PASSWORD=Doctor123!
+SEED_DOCTOR_PASSWORD=your_secure_doctor_password
 
 SEED_STAFF_EMAIL=staff@gmail.com
-SEED_STAFF_PASSWORD=Staff123!
+SEED_STAFF_PASSWORD=your_secure_staff_password
 
 # =====================================================
 # JWT AUTHENTICATION
 # =====================================================
-JWT_SECRET=miniiclinicproject_secure_jwt_secret_key_2026
+JWT_SECRET=your_secure_jwt_secret_key
 JWT_EXPIRES_IN=8h
 
 # =====================================================
-# CORS & FRONTEND URL
+# CORS
 # =====================================================
 FRONTEND_URL=http://localhost:5173
 ```
 
-### B. Konfigurasi Frontend (`frontend/.env`)
-Buat file `.env` di folder `frontend/` dengan menyalin file `frontend/.env.example`:
-
+### Frontend `frontend/.env.example`
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
 ---
 
-## 6. Cara Melakukan Migrasi & Seeding Database
+## 🛠️ Cara Instalasi Aplikasi
 
-### Langkah 1: Buat Database PostgreSQL
-Buka terminal PostgreSQL / pgAdmin dan buat database baru bernama `mini_clinic_db`:
+### 1. Clone Repositori Git
+```bash
+git clone https://github.com/rizallfrm/Mini-Clinic-Apps.git
+cd mini-clinic-information-system
+```
+
+### 2. Buat File `.env` Lokal
+- Di folder `backend/`: salin `.env.example` ke `.env` dan isi password/kunci rahasia lokal Anda.
+- Di folder `frontend/`: salin `.env.example` ke `.env`.
+
+### 3. Install Dependensi Backend & Frontend
+```bash
+# Backend
+cd backend
+npm install
+
+# Frontend
+cd ../frontend
+npm install
+```
+
+---
+
+## 🗄️ Migrasi & Seeding Database
+
+Pastikan database PostgreSQL `mini_clinic_db` telah dibuat di lokal Anda:
 
 ```sql
 CREATE DATABASE mini_clinic_db;
 ```
 
-### Langkah 2: Jalankan Migrasi & Seeder
-Di dalam direktori `backend/`, jalankan perintah berikut:
+Jalankan perintah berikut di folder `backend/`:
 
 ```bash
-# 1. Jalankan migrasi tabel database
+# 1. Jalankan create tabel database
+npx sequelize-cli db:create
+
+# 2. Jalankan migrasi tabel database
 npx sequelize-cli db:migrate
 
-# 2. Jalankan seeder data awal dan akun login demo
+# 2. Jalankan seeder data awal (Membaca password admin/dokter dari .env lokal)
 npx sequelize-cli db:seed:all
 ```
 
-*(Atau opsional: Impor file `database/mini_clinic_db.sql` secara langsung menggunakan pgAdmin / psql).*
+---
+
+## 💻 Cara Menjalankan Aplikasi
+
+### 1. Jalankan Backend Server
+```bash
+cd backend
+npm run dev
+```
+*Backend server berjalan pada `http://localhost:5000`*.
+
+### 2. Jalankan Frontend Client
+```bash
+cd frontend
+npm run dev
+```
+*Frontend React client berjalan pada `http://localhost:5173`*.
 
 ---
 
-## 7. Ketentuan Keamanan (`.env.example`)
+## 🔐 Akun Login (Demo Roles)
 
-Sesuai ketentuan tugas:
-- ✅ **`.env.example` disediakan** di folder `backend/` dan `frontend/` sebagai panduan struktur konfigurasi.
-- ✅ **Tidak ada kredensial sensitif di-hardcode** dalam *source code* maupun repositori Git. Kredensial dibaca secara dinamis menggunakan `process.env`.
-- ✅ File `.env` sensitif yang berisi password asli telah didaftarkan dalam **`.gitignore`** sehingga aman dan tidak akan ter-commit ke repositori public/private.
+Email akun demo dan nilai password dikonfigurasi melalui variabel lingkungan (`.env`):
+
+| Role Pengguna | Email Login | Password (Konfigurasi `.env`) | Hak Akses Utama |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin@gmail.com` | `SEED_ADMIN_PASSWORD` | Akses penuh (Master Data, User, Laporan, Poli, Dokter) |
+| **Dokter Spesialis** | `doctor@gmail.com` | `SEED_DOCTOR_PASSWORD` | Pemeriksaan SOAP, Resep Obat, Dashboard Dokter |
+| **Petugas Pendaftaran** | `staff@gmail.com` | `SEED_STAFF_PASSWORD` | Master Pasien, Pendaftaran Kunjungan, Antrean Live |
+
+---
+
+## 📬 Postman Collection
+
+Dokumentasi REST API lengkap dapat ditemukan pada file `postman/mini_clinic_postman_collection.json`. 
+Impor file tersebut ke aplikasi **Postman** untuk melakukan pengujian seluruh endpoint API.
