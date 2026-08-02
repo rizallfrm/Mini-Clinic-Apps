@@ -86,7 +86,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"Admin123!\"\n}"
+              "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"Admin123!\"\n}"
             }
           },
           "response": [
@@ -115,7 +115,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"Admin123!\"\n}"
+                  "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"Admin123!\"\n}"
                 }
               },
               "status": "OK",
@@ -127,7 +127,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzIyMzAwMDAwfQ.abc123\",\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Administrator\",\n      \"email\": \"admin@clinic.com\",\n      \"role\": \"ADMIN\"\n    }\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzIyMzAwMDAwfQ.abc123\",\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Administrator\",\n      \"email\": \"admin@gmail.com\",\n      \"role\": \"ADMIN\"\n    }\n  }\n}"
             }
           ],
           "event": [
@@ -170,7 +170,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\"\n}"
+              "raw": "{\n  \"email\": \"doctor@gmail.com\",\n  \"password\": \"Doctor123!\"\n}"
             }
           },
           "response": [
@@ -199,7 +199,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\"\n}"
+                  "raw": "{\n  \"email\": \"doctor@gmail.com\",\n  \"password\": \"Doctor123!\"\n}"
                 }
               },
               "status": "OK",
@@ -211,7 +211,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IERPQ1RPUiIsImlhdCI6MTcyMjMwMDAwMH0.xyz789\",\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@clinic.com\",\n      \"role\": \"DOCTOR\"\n    }\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login berhasil\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6IERPQ1RPUiIsImlhdCI6MTcyMjMwMDAwMH0.xyz789\",\n    \"user\": {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@gmail.com\",\n      \"role\": \"DOCTOR\"\n    }\n  }\n}"
             }
           ],
           "event": [
@@ -254,7 +254,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+              "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"WrongPassword123!\"\n}"
             }
           },
           "response": [
@@ -283,7 +283,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+                  "raw": "{\n  \"email\": \"admin@gmail.com\",\n  \"password\": \"WrongPassword123!\"\n}"
                 }
               },
               "status": "Unauthorized",
@@ -411,7 +411,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Administrator\",\n    \"email\": \"admin@clinic.com\",\n    \"role\": \"ADMIN\"\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Administrator\",\n    \"email\": \"admin@gmail.com\",\n    \"role\": \"ADMIN\"\n  }\n}"
             }
           ]
         },
@@ -1185,7 +1185,7 @@
                       "value": "application/json"
                     }
                   ],
-                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@clinic.com\",\n      \"specialization\": \"Dokter Umum\",\n      \"is_active\": true,\n      \"policlinic_id\": 1\n    }\n  ]\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Success\",\n  \"data\": [\n    {\n      \"id\": 2,\n      \"name\": \"dr. Ahmad Fauzi, Sp.U\",\n      \"email\": \"doctor@gmail.com\",\n      \"specialization\": \"Dokter Umum\",\n      \"is_active\": true,\n      \"policlinic_id\": 1\n    }\n  ]\n}"
                 }
               ]
             },
@@ -1330,7 +1330,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
+                  "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@gmail.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
                 }
               },
               "response": [
@@ -1355,7 +1355,7 @@
                     },
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@clinic.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
+                      "raw": "{\n  \"name\": \"dr. Dup\",\n  \"email\": \"doctor@gmail.com\",\n  \"password\": \"Doctor123!\",\n  \"specialization\": \"Dokter Umum\",\n  \"policlinic_id\": 1\n}"
                     }
                   },
                   "status": "Conflict",
