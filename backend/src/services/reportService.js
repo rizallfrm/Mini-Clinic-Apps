@@ -49,11 +49,18 @@ const getRevenueReport = async (startDate, endDate) => {
 };
 
 const getMedicineUsageReport = async (startDate, endDate) => {
+  const where = {};
+  if (startDate && endDate) {
+    where.created_at = { [Op.between]: [new Date(startDate), new Date(endDate + 'T23:59:59')] };
+  }
+
   const usage = await PrescriptionDetail.findAll({
+    where,
     attributes: [
       'medicine_id',
       [sequelize.fn('SUM', sequelize.col('quantity')), 'total_quantity'],
       [sequelize.fn('COUNT', sequelize.col('PrescriptionDetail.id')), 'total_prescribed'],
+      [sequelize.fn('MAX', sequelize.col('PrescriptionDetail.created_at')), 'last_date'],
     ],
     include: [{ model: Medicine, as: 'medicine', attributes: ['id', 'name', 'unit', 'price'] }],
     group: ['medicine_id', 'medicine.id', 'medicine.name', 'medicine.unit', 'medicine.price'],
