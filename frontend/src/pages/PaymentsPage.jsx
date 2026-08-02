@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, StatusBadge, EmptyState, Modal,
   Alert, FormField, Select, PageHeader,
@@ -7,6 +8,7 @@ import {
 import { CreditCard, Printer, CheckCircle, Receipt, DollarSign } from 'lucide-react';
 
 const PaymentsPage = () => {
+  const toast = useToast();
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,11 +68,14 @@ const PaymentsPage = () => {
         payment_method: paymentMethod,
       });
       if (res.data.success) {
+        toast.success('Pembayaran berhasil diproses!');
         setInvoice(p => ({ ...p, payment: res.data.data }));
         await fetchCompletedRegistrations();
       }
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Gagal memproses pembayaran.');
+      const msg = err.response?.data?.message || 'Gagal memproses pembayaran.';
+      setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
