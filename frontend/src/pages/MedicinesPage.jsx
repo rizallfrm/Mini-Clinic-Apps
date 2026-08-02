@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, Pagination, EmptyState, Modal, Alert,
   FormField, Input, Select, Textarea, PageHeader,
@@ -15,6 +16,7 @@ const emptyAdjForm  = () => ({ type: 'ADD', quantity: '', notes: '' });
 
 const MedicinesPage = () => {
   const { isAdmin, isDoctor } = useAuth();
+  const toast = useToast();
   const canWrite = isAdmin;
 
   const [medicines, setMedicines]   = useState([]);
@@ -59,6 +61,7 @@ const MedicinesPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.post('/medicines', { ...formData, price: Number(formData.price), stock: Number(formData.stock), min_stock: Number(formData.min_stock) });
+      toast.success('Data obat berhasil ditambahkan!');
       setModal(null); fetchMedicines(1);
     } catch (err) {
       const data = err.response?.data;
@@ -66,6 +69,7 @@ const MedicinesPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal menyimpan obat.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -74,6 +78,7 @@ const MedicinesPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.put(`/medicines/${selected.id}`, { ...formData, price: Number(formData.price), stock: Number(formData.stock), min_stock: Number(formData.min_stock) });
+      toast.success('Data obat berhasil diperbarui!');
       setModal(null); fetchMedicines(pagination.page);
     } catch (err) {
       const data = err.response?.data;
@@ -81,6 +86,7 @@ const MedicinesPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal memperbarui obat.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -89,6 +95,7 @@ const MedicinesPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.post(`/medicines/${selected.id}/stock`, { ...adjForm, quantity: Number(adjForm.quantity) });
+      toast.success('Stok obat berhasil diperbarui!');
       setModal(null); fetchMedicines(pagination.page);
     } catch (err) {
       const data = err.response?.data;
@@ -96,6 +103,7 @@ const MedicinesPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal menyesuaikan stok.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
