@@ -136,7 +136,7 @@ const DoctorsPage = () => {
       <FormField label="Email Login" required>
         <Input type="email" required value={formData.email || ''}
           onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
-          placeholder="dokter@clinica.com" />
+          placeholder="dokter@gmail.com" />
       </FormField>
       <FormField label={isEdit ? 'Password Baru (kosongkan jika tidak diubah)' : 'Password'} required={!isEdit}>
         <Input type="password" required={!isEdit} value={formData.password || ''}
