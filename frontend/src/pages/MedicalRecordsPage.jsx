@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, StatusBadge, EmptyState, Modal,
   Alert, FormField, Input, Select, Textarea, PageHeader,
@@ -24,6 +25,7 @@ const emptyRx = () => ({ medicine_id: '', dosage: '', frequency: '', quantity: '
 
 const MedicalRecordsPage = () => {
   const { isAdmin, isDoctor, user } = useAuth();
+  const toast = useToast();
 
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,17 +133,18 @@ const MedicalRecordsPage = () => {
       if (updatedRecord && updatedRecord.id) {
         setExistingRecord(updatedRecord);
       }
+      toast.success(existingRecord ? 'Catatan SOAP berhasil diperbarui!' : 'Catatan SOAP berhasil disimpan!');
       await fetchRegistrations();
       if (selected) {
         await selectPatient(selected);
       }
     } catch (err) {
       const data = err.response?.data;
-      if (data?.errors && typeof data.errors === 'object' && Object.keys(data.errors).length > 0) {
-        setFormError(Object.values(data.errors).join(' · '));
-      } else {
-        setFormError(data?.message || 'Gagal menyimpan SOAP.');
-      }
+      const msg = data?.errors && typeof data.errors === 'object' && Object.keys(data.errors).length > 0
+        ? Object.values(data.errors).join(' · ')
+        : (data?.message || 'Gagal menyimpan SOAP.');
+      setFormError(msg);
+      toast.error(msg);
     } finally { setSubmitting(false); }
   };
 
@@ -170,23 +173,35 @@ const MedicalRecordsPage = () => {
         })),
       });
       setShowRxModal(false);
+      toast.success('Resep obat berhasil disimpan!');
       await selectPatient(selected);
     } catch (err) {
-      setFormError(err.response?.data?.message || 'Gagal menyimpan resep.');
+      const msg = err.response?.data?.message || 'Gagal menyimpan resep.';
+      setFormError(msg);
+      toast.error(msg);
     } finally { setSubmitting(false); }
   };
 
-  const handleCompleteRecord = async () => {
+  const handleCompleteRecord = () => {
     if (!existingRecord?.id) return;
-    if (!window.confirm('Yakin ingin menyelesaikan pemeriksaan untuk pasien ini? Status antrean dan registrasi akan diubah menjadi COMPLETED.')) return;
-    setSubmitting(true);
-    try {
-      await api.put(`/medical-records/${existingRecord.id}/complete`);
-      await fetchRegistrations();
-      if (selected) await selectPatient(selected);
-    } catch (err) {
-      alert(err.response?.data?.message || 'Gagal menyelesaikan pemeriksaan.');
-    } finally { setSubmitting(false); }
+    toast.confirm({
+      title: 'Selesaikan Pemeriksaan',
+      message: 'Yakin ingin menyelesaikan pemeriksaan untuk pasien ini? Status antrean dan registrasi akan diubah menjadi COMPLETED.',
+      confirmText: 'Ya, Selesaikan',
+      cancelText: 'Batal',
+      onConfirm: async () => {
+        setSubmitting(true);
+        try {
+          await api.put(`/medical-records/${existingRecord.id}/complete`);
+          toast.success('Pemeriksaan pasien berhasil diselesaikan!');
+          await fetchRegistrations();
+          if (selected) await selectPatient(selected);
+        } catch (err) {
+          const msg = err.response?.data?.message || 'Gagal menyelesaikan pemeriksaan.';
+          toast.error(msg);
+        } finally { setSubmitting(false); }
+      },
+    });
   };
 
   const handlePrintPrescription = () => {
