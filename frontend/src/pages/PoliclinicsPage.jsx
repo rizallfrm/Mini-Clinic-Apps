@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, EmptyState, Modal, Alert,
   FormField, Input, Select, Textarea, PageHeader,
@@ -11,6 +12,7 @@ const emptyForm = () => ({ code: '', name: '', description: '', is_active: true 
 
 const PoliclinicsPage = () => {
   const { isAdmin } = useAuth();
+  const toast = useToast();
 
   const [polis, setPolis] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -55,14 +57,26 @@ const PoliclinicsPage = () => {
     setModal('edit');
   };
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Yakin ingin menghapus poliklinik "${name}"?\nCatatan: Poli tidak bisa dihapus jika masih ada data dokter atau pendaftaran yang terkait dengannya.`)) return;
-    try {
-      await api.delete(`/policlinics/${id}`);
-      fetchPoliclinics();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Gagal menghapus poliklinik.');
-    }
+  const handleDelete = (idOrP, nameParam) => {
+    const id = typeof idOrP === 'object' ? idOrP?.id : idOrP;
+    const name = typeof idOrP === 'object' ? idOrP?.name : nameParam;
+
+    toast.confirm({
+      title: 'Hapus Poliklinik',
+      message: `Yakin ingin menghapus poliklinik "${name}"? Poli tidak dapat dihapus jika masih terhubung dengan data dokter/registrasi.`,
+      confirmText: 'Ya, Hapus Poli',
+      cancelText: 'Batal',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/policlinics/${id}`);
+          toast.success(`Poliklinik "${name}" berhasil dihapus!`);
+          fetchPoliclinics();
+        } catch (err) {
+          const msg = err.response?.data?.message || 'Gagal menghapus poliklinik.';
+          toast.error(msg);
+        }
+      },
+    });
   };
 
   const handleAdd = async (e) => {
@@ -70,6 +84,7 @@ const PoliclinicsPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.post('/policlinics', formData);
+      toast.success('Data poliklinik berhasil ditambahkan!');
       setModal(null); fetchPoliclinics();
     } catch (err) {
       const data = err.response?.data;
@@ -77,6 +92,7 @@ const PoliclinicsPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal menambah poliklinik.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
@@ -85,6 +101,7 @@ const PoliclinicsPage = () => {
     setFormError(''); setSubmitting(true);
     try {
       await api.put(`/policlinics/${selected.id}`, formData);
+      toast.success('Data poliklinik berhasil diperbarui!');
       setModal(null); fetchPoliclinics();
     } catch (err) {
       const data = err.response?.data;
@@ -92,6 +109,7 @@ const PoliclinicsPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal memperbarui poliklinik.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
