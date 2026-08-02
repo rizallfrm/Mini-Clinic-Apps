@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 import {
   LoadingSpinner, StatusBadge, EmptyState, Modal,
   Alert, FormField, Input, Select, PageHeader, Pagination,
@@ -15,6 +16,7 @@ const emptyUser = () => ({
 });
 
 const UsersPage = () => {
+  const toast = useToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -72,8 +74,10 @@ const UsersPage = () => {
     try {
       if (editingUser) {
         await api.put(`/users/${editingUser.id}`, formData);
+        toast.success(`Data akun ${formData.full_name} berhasil diperbarui!`);
       } else {
         await api.post('/users', formData);
+        toast.success(`Akun pengguna ${formData.full_name} berhasil dibuat!`);
       }
       setShowModal(false);
       fetchUsers();
@@ -83,17 +87,28 @@ const UsersPage = () => {
         ? Object.values(data.errors).join(', ')
         : data?.message || 'Gagal menyimpan data akun.';
       setFormError(errorMsg);
+      toast.error(errorMsg);
     } finally { setSubmitting(false); }
   };
 
-  const toggleDeactivate = async (u) => {
-    if (!window.confirm(`Yakin ingin ${u.is_active ? 'nonaktifkan' : 'aktifkan'} akun ${u.full_name}?`)) return;
-    try {
-      await api.put(`/users/${u.id}`, { is_active: !u.is_active });
-      fetchUsers();
-    } catch (err) {
-      alert(err.response?.data?.message || 'Gagal mengubah status user.');
-    }
+  const toggleDeactivate = (u) => {
+    const actionText = u.is_active ? 'nonaktifkan' : 'aktifkan';
+    toast.confirm({
+      title: `${u.is_active ? 'Nonaktifkan' : 'Aktifkan'} Akun`,
+      message: `Yakin ingin ${actionText} akun pengguna "${u.full_name}"?`,
+      confirmText: `Ya, ${actionText}`,
+      cancelText: 'Batal',
+      onConfirm: async () => {
+        try {
+          await api.put(`/users/${u.id}`, { is_active: !u.is_active });
+          toast.success(`Status akun ${u.full_name} berhasil diubah!`);
+          fetchUsers();
+        } catch (err) {
+          const msg = err.response?.data?.message || 'Gagal mengubah status user.';
+          toast.error(msg);
+        }
+      },
+    });
   };
 
   return (
